@@ -9,9 +9,10 @@ import Foundation
 import SwiftData
 
 @Model
-final class Article {
-    #Unique<Article>([\.author, \.url])
+final class Article: Decodable {
+    #Unique<Article>([\.source, \.author, \.url])
     
+    var source: Source
     var author: String
     var title: String
     var articleDescription: String
@@ -21,30 +22,35 @@ final class Article {
     var isSaved: Bool
     
     init(
+        source: Source,
         author: String,
         title: String,
         articleDescription: String,
         url: URL,
         thumbnail: URL,
-        publishedAt: Date
+        publishedAt: Date,
+        isSaved: Bool = false
     ) {
+        self.source = source
+        self.author = author
         self.title = title
         self.articleDescription = articleDescription
-        self.author = author
         self.url = url
         self.thumbnail = thumbnail
         self.publishedAt = publishedAt
-        self.isSaved = false
+        self.isSaved = isSaved
     }
     
     private enum CodingKeys: String, CodingKey {
-        case title, author, url, publishedAt
+        case source, author, title, url, publishedAt
         case articleDescription = "description"
         case thumbnail = "urlToImage"
     }
     
     required init(from decoder: any Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
+        
+        source = try container.decode(Source.self, forKey: .source)
         author = try container.decode(String.self, forKey: .author)
         title = try container.decode(String.self, forKey: .title)
         articleDescription = try container
@@ -53,16 +59,5 @@ final class Article {
         thumbnail = try container.decode(URL.self, forKey: .thumbnail)
         publishedAt = try container.decode(Date.self, forKey: .publishedAt)
         isSaved = false
-    }
-    
-    func encode(to encoder: any Encoder) throws {
-        var container = encoder.container(keyedBy: CodingKeys.self)
-        
-        try container.encode(author, forKey: .author)
-        try container.encode(title, forKey: .title)
-        try container.encode(articleDescription, forKey: .articleDescription)
-        try container.encode(url, forKey: .url)
-        try container.encode(thumbnail, forKey: .thumbnail)
-        try container.encode(publishedAt, forKey: .publishedAt)
     }
 }
