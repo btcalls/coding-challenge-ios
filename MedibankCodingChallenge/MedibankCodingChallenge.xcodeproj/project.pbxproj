@@ -37,6 +37,15 @@
 			);
 			target = 494625402F39B38500805A5C /* MedibankCodingChallenge */;
 		};
+		4946272F2F39CBA800805A5C /* Exceptions for "MedibankCodingChallenge" folder in "MedibankCodingChallengeTests" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Database/MockSwiftDataManager.swift,
+				Database/Models/Article.swift,
+				Database/Models/Source.swift,
+			);
+			target = 4946254F2F39B38700805A5C /* MedibankCodingChallengeTests */;
+		};
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -44,6 +53,7 @@
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
 				4946264E2F39B9A200805A5C /* Exceptions for "MedibankCodingChallenge" folder in "MedibankCodingChallenge" target */,
+				4946272F2F39CBA800805A5C /* Exceptions for "MedibankCodingChallenge" folder in "MedibankCodingChallengeTests" target */,
 			);
 			path = MedibankCodingChallenge;
 			sourceTree = "<group>";

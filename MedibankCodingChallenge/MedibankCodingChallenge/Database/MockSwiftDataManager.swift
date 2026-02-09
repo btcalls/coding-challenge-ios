@@ -1,5 +1,5 @@
 //
-//  SwiftDataManager.swift
+//  MockSwiftDataManager.swift
 //  MedibankCodingChallenge
 //
 //  Created by Jason Jon Carreos on 9/2/2026.
@@ -7,24 +7,20 @@
 
 import SwiftData
 
-final class SwiftDataManager {
-    static let shared = SwiftDataManager()
-    
+final class MockSwiftDataManager {
     var container: ModelContainer?
     var context: ModelContext?
     
-    private init() {
+    init() {
         do {
             let schema = Schema([
                 Source.self,
                 Article.self,
             ])
-            let modelConfiguration = ModelConfiguration(schema: schema,
-                                                        isStoredInMemoryOnly: false)
-            
+            let configuration = ModelConfiguration(schema: schema, isStoredInMemoryOnly: true)
             container = try ModelContainer(
                 for: schema,
-                configurations: [modelConfiguration]
+                configurations: configuration
             )
             
             if let container {
