@@ -9,7 +9,7 @@ import Foundation
 import SwiftData
 
 @Model
-final class Article: Decodable {
+final class Article: Codable {
     #Unique<Article>([\.source, \.author, \.url])
     
     var source: Source
@@ -59,5 +59,25 @@ final class Article: Decodable {
         thumbnail = try container.decode(URL.self, forKey: .thumbnail)
         publishedAt = try container.decode(Date.self, forKey: .publishedAt)
         isSaved = false
+    }
+    
+    func encode(to encoder: any Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        
+        try container.encode(source, forKey: .source)
+        try container.encode(author, forKey: .author)
+        try container.encode(title, forKey: .title)
+        try container.encode(articleDescription, forKey: .articleDescription)
+        try container.encode(url, forKey: .url)
+        try container.encode(thumbnail, forKey: .thumbnail)
+        try container.encode(publishedAt, forKey: .publishedAt)
+    }
+}
+
+extension Article: Equatable {
+    static func == (lhs: Article, rhs: Article) -> Bool {
+        return (lhs.source.name == rhs.source.name &&
+                lhs.author == rhs.author &&
+                lhs.title == rhs.title)
     }
 }

@@ -9,12 +9,12 @@ import Foundation
 import os
 
 /// Common HTTP methods supported by the networking layer.
-public enum HTTPMethod: String, Sendable {
+enum HTTPMethod: String, Sendable {
     case get = "GET"
 }
 
 /// Errors that can be thrown by the networking layer.
-public enum APIError: Error, LocalizedError, Sendable {
+enum APIError: Error, LocalizedError, Sendable {
     case invalidURL
     case transportError(underlying: Error)
     case invalidResponse
@@ -22,7 +22,7 @@ public enum APIError: Error, LocalizedError, Sendable {
     case decodingFailed(underlying: Error)
     case cancelled
 
-    public var errorDescription: String? {
+    var errorDescription: String? {
         switch self {
         case .invalidURL:
             return "The URL could not be constructed."
@@ -47,17 +47,17 @@ public enum APIError: Error, LocalizedError, Sendable {
 
 /// A lightweight description of an API endpoint.
 /// Provide the expected `Response` type at the call-site.
-public struct Endpoint<Response>: Sendable {
-    public var path: String
-    public var method: HTTPMethod
-    public var queryItems: [URLQueryItem]
-    public var headers: [String: String]
+struct Endpoint<Response>: Sendable {
+    var path: String
+    var method: HTTPMethod
+    var queryItems: [URLQueryItem]
+    var headers: APIClient.Headers
 
-    public init(
-        path: String,
+    init(
+        path: String = "",
         method: HTTPMethod = .get,
         queryItems: [URLQueryItem] = [],
-        headers: [String: String] = [:]
+        headers: APIClient.Headers = [:]
     ) {
         self.path = path
         self.method = method
@@ -67,8 +67,8 @@ public struct Endpoint<Response>: Sendable {
 }
 
 /// A simple, composable API client built on URLSession and Swift Concurrency.
-public final class APIClient: @unchecked Sendable {
-    public typealias Headers = [String: String]
+final class APIClient: @unchecked Sendable {
+    typealias Headers = [String: String]
     
     private let baseURL: URL
     private let session: URLSession
@@ -85,7 +85,7 @@ public final class APIClient: @unchecked Sendable {
     ///   - defaultHeaders: Headers applied to every request unless overridden per-endpoint.
     ///   - interceptor: Optional hook to modify a request before sending (e.g., attach auth tokens).
     ///   - enableLogging: When true, prints basic request/response logs to the console.
-    public init(
+    init(
         baseURL: URL,
         session: URLSession = .shared,
         decoder: JSONDecoder = JSONDecoder(),
@@ -105,7 +105,7 @@ public final class APIClient: @unchecked Sendable {
     /// - Parameter endpoint: The endpoint description.
     /// - Returns: The decoded response value.
     @discardableResult
-    public func send<Response: Decodable>(_ endpoint: Endpoint<Response>) async throws -> Response {
+    func send<Response: Decodable>(_ endpoint: Endpoint<Response>) async throws -> Response {
         let request = try await buildRequest(for: endpoint)
         
         if enableLogging {
@@ -133,6 +133,13 @@ public final class APIClient: @unchecked Sendable {
             }
             
             do {
+                if let json = try? JSONSerialization.jsonObject(
+                    with: data,
+                    options: []
+                ) {
+                    print(json)
+                }
+                
                 return try decoder.decode(Response.self, from: data)
             } catch {
                 throw APIError.decodingFailed(underlying: error)
@@ -155,13 +162,11 @@ public final class APIClient: @unchecked Sendable {
     }
     
     /// Sends a request and returns the raw `Data` response without attempting to decode.
-    public func sendRaw(_ endpoint: Endpoint<Data>) async throws -> Data {
+    func sendRaw(_ endpoint: Endpoint<Data>) async throws -> Data {
         try await send(endpoint)
     }
-}
-
-extension APIClient {
-    private func buildRequest<Response>(for endpoint: Endpoint<Response>) async throws -> URLRequest {
+    
+    func buildRequest<Response>(for endpoint: Endpoint<Response>) async throws -> URLRequest {
         // Ensure we don't double-encode a leading slash in `path`.
         let sanitizedPath = endpoint.path.hasPrefix("/") ? String(endpoint.path.dropFirst()) : endpoint.path
         var components = URLComponents(url: baseURL.appendingPathComponent(sanitizedPath),
