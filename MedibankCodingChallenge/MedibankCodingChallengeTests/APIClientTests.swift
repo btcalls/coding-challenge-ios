@@ -12,20 +12,10 @@ private func makeSession() -> URLSession {
 }
 
 private func makeClient(baseURL: URL) -> APIClient {
-    var headers: APIClient.Headers = [
-        "content-type": "application/json; charset=utf-8",
-        "Accept": "application/json"
-    ]
-    
-    if let apiKey = Bundle.main.apiKey {
-        headers["X-Api-Key"] = apiKey
-    }
-    
     return APIClient(
         baseURL: baseURL,
         session: makeSession(),
         decoder: JSONDecoder(),
-        defaultHeaders: headers,
         enableLogging: true
     )
 }

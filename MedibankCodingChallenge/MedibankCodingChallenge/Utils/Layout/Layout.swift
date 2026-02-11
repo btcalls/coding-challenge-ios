@@ -28,5 +28,6 @@ struct Layout {
     
     struct Size {
         static let thumbnail: CGFloat = 120
+        static let thumbnailMax: CGFloat = 200
     }
 }

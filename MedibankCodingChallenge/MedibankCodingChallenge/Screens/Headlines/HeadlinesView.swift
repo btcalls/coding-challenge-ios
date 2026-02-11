@@ -8,8 +8,43 @@
 import SwiftUI
 
 struct HeadlinesView: View {
+    @StateObject private var viewModel = HeadlinesViewModel()
+    
     var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+        NavigationStack {
+            if viewModel.isLoading {
+                ProgressView()
+            }
+            
+            List(viewModel.data) { article in
+                LazyVStack(spacing: Layout.Spacing.regular) {
+                    ArticleRow(article: article)
+                }
+            }
+            .emptyView(
+                if: viewModel.errorMessage != nil && viewModel.data.count == 0,
+                label: Label("No Articles", systemImage: "newspaper"),
+                description: {
+                    Text("Articles from selected sources will appear here.")
+                },
+                actions: {
+                    Button(action: {
+                        Task {
+                            await viewModel.fetchArticles()
+                        }
+                    }, label: {
+                        Text("Get Articles")
+                            .fontWeight(.medium)
+                            .padding(.all, Layout.Padding.compact)
+                    })
+                    .buttonStyle(.glassProminent)
+                }
+            )
+            .navigationTitle("Your News")
+            .task {
+                await viewModel.fetchArticles()
+            }
+        }
     }
 }
 

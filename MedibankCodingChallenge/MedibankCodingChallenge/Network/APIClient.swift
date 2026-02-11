@@ -48,7 +48,6 @@ final class APIClient: @unchecked Sendable {
     private let baseURL: URL
     private let session: URLSession
     private let decoder: JSONDecoder
-    private let defaultHeaders: Headers
     private let enableLogging: Bool
     
     /// Create an API client.
@@ -56,19 +55,17 @@ final class APIClient: @unchecked Sendable {
     ///   - baseURL: The base URL for all endpoints (e.g., https://api.example.com).
     ///   - session: The URLSession to use. Defaults to `.shared`.
     ///   - decoder: JSON decoder for decoding responses.
-    ///   - defaultHeaders: Headers applied to every request unless overridden per-endpoint.
     ///   - enableLogging: When true, prints basic request/response logs to the console.
     init(
         baseURL: URL,
         session: URLSession = .shared,
-        decoder: JSONDecoder = JSONDecoder(),
+        decoder: JSONDecoder = .standard,
         defaultHeaders: Headers = [:],
         enableLogging: Bool = false
     ) {
         self.baseURL = baseURL
         self.session = session
         self.decoder = decoder
-        self.defaultHeaders = defaultHeaders
         self.enableLogging = enableLogging
     }
     
@@ -107,6 +104,15 @@ final class APIClient: @unchecked Sendable {
     }
     
     func buildRequest<Response>(for endpoint: Endpoint<Response>) async throws -> URLRequest {
+        var defaultHeaders: Headers = [
+            "content-type": "application/json; charset=utf-8",
+            "Accept": "application/json"
+        ]
+        
+        if let apiKey = Bundle.main.apiKey {
+            defaultHeaders["X-Api-Key"] = apiKey
+        }
+        
         // Ensure we don't double-encode a leading slash in `path`.
         let sanitizedPath = endpoint.path.hasPrefix("/") ? String(endpoint.path.dropFirst()) : endpoint.path
         var components = URLComponents(url: baseURL.appendingPathComponent(sanitizedPath),

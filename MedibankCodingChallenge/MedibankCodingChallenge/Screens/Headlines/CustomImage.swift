@@ -40,6 +40,7 @@ private final class ImageLoader: ObservableObject {
     }
 
     @Published var state: State = .idle
+    
     private var task: Task<Void, Never>?
 
     func load(from url: URL?, thumbnailMaxDimension: CGFloat?) {
@@ -105,7 +106,9 @@ private final class ImageLoader: ObservableObject {
         }
     }
 
-    func cancel() { task?.cancel() }
+    func cancel() {
+        task?.cancel()
+    }
 }
 
 private extension UIImage {
@@ -137,21 +140,21 @@ private extension UIImage {
 
 struct CustomImage: View {
     let url: URL?
-    var thumbnailMaxDimension: CGFloat? = 200
+    var thumbnailMaxDimension: CGFloat? = Layout.Size.thumbnailMax
     var contentMode: ContentMode = .fill
-    var cornerRadius: CGFloat = 8
+    var cornerRadius: CGFloat = Layout.CornerRadius.regular
     var showsActivity: Bool = true
-    var placeholder: AnyView? = nil
-    var failureView: AnyView? = nil
 
     @StateObject private var loader = ImageLoader()
 
     var body: some View {
         ZStack {
             switch loader.state {
-            case .idle, .loading:
+            case .idle:
                 placeholderView
-                    .overlay(activityView)
+            
+            case .loading:
+                activityView
             
             case .success(let uiImage):
                 Image(uiImage: uiImage)
@@ -161,8 +164,7 @@ struct CustomImage: View {
                     .transition(.opacity)
                 
             case .failure:
-                (failureView ?? AnyView(Image(systemName: "photo").symbolVariant(.slash)) )
-                    .foregroundStyle(.secondary)
+                failureView
             }
         }
         .onAppear {
@@ -174,25 +176,32 @@ struct CustomImage: View {
         .onDisappear {
             loader.cancel()
         }
-        .accessibilityLabel("image")
     }
 
     @ViewBuilder
     private var activityView: some View {
         if showsActivity && (loader.state == .loading || loader.state == .idle) {
-            ProgressView().progressViewStyle(.circular)
+            RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
+                .fill(.quaternary)
+                .overlay {
+                    ProgressView().progressViewStyle(.circular)
+                }
         }
     }
 
     @ViewBuilder
     private var placeholderView: some View {
-        if let placeholder {
-            placeholder
-        } else {
-            RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
-                .fill(.quaternary)
-                .overlay(Image(systemName: "photo").foregroundStyle(.tertiary))
-        }
+        RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
+            .fill(.quaternary)
+            .overlay(Image(systemName: "photo").foregroundStyle(.tertiary))
+    }
+    
+    @ViewBuilder
+    private var failureView: some View {
+        RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
+            .fill(.quaternary)
+            .overlay(Image(systemName: "photo.trianglebadge.exclamationmark")
+                .foregroundStyle(.tertiary))
     }
 }
 

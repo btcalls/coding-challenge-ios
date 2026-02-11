@@ -17,8 +17,12 @@ struct ArticleRow: View {
             VStack(alignment: .leading) {
                 Text(article.title)
                     .articleTitleStyle()
-                Text("By \(article.author)")
-                    .secondaryTextStyle()
+                
+                if let author = article.author {
+                    Text("By \(author)")
+                        .secondaryTextStyle()
+                }
+                
                 Text(article.articleDescription)
                     .descriptionStyle()
                     .lineLimit(2, reservesSpace: true)
@@ -28,7 +32,7 @@ struct ArticleRow: View {
                 .frame(width: size, height: size)
                 .clipShape(.rect(cornerRadius: Layout.CornerRadius.regular))
         }
-        .padding(.all, Layout.Padding.regular)
+        .padding(.all, Layout.Padding.compact)
     }
 }
 
