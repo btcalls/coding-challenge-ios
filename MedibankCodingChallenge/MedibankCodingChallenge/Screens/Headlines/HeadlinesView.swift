@@ -45,12 +45,12 @@ struct HeadlinesView: View {
                 }
             )
             .navigationTitle("Your News")
-            .task {
-                await viewModel.fetchArticles()
-            }
             .refreshable {
                 await viewModel.fetchArticles()
             }
+        }
+        .task(id: "initial-load") {
+            await viewModel.fetchArticles()
         }
     }
 }
