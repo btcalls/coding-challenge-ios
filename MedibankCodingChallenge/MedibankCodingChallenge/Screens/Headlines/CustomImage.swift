@@ -199,12 +199,12 @@ struct CustomImage: View {
 #Preview {
     VStack(spacing: 16) {
         CustomImage(url: URL(string: "https://picsum.photos/seed/1/600/400"))
-            .frame(width: 120, height: 120)
+            .frame(width: Layout.Size.thumbnail, height: Layout.Size.thumbnail)
             .clipped()
         CustomImage(url: URL(string: "https://invalid-domain/image.jpg"), showsActivity: true)
-            .frame(width: 120, height: 120)
+            .frame(width: Layout.Size.thumbnail, height: Layout.Size.thumbnail)
         CustomImage(url: nil)
-            .frame(width: 120, height: 120)
+            .frame(width: Layout.Size.thumbnail, height: Layout.Size.thumbnail)
     }
     .padding()
 }

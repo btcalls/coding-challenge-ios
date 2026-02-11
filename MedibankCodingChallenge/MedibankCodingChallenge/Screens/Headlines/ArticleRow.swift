@@ -8,21 +8,27 @@
 import SwiftUI
 
 struct ArticleRow: View {
+    private let size: CGFloat = 120
+    
     let article: Article
     
     var body: some View {
-        HStack(alignment: .top) {
+        HStack(alignment: .center) {
             VStack(alignment: .leading) {
                 Text(article.title)
                     .articleTitleStyle()
-                    .lineLimit(2)
                 Text("By \(article.author)")
                     .secondaryTextStyle()
                 Text(article.articleDescription)
                     .descriptionStyle()
                     .lineLimit(2, reservesSpace: true)
             }
+            
+            CustomImage(url: article.thumbnail, thumbnailMaxDimension: size)
+                .frame(width: size, height: size)
+                .clipShape(.rect(cornerRadius: Layout.CornerRadius.regular))
         }
+        .padding(.all, Layout.Padding.regular)
     }
 }
 
