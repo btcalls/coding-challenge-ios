@@ -10,7 +10,7 @@ import SwiftData
 
 @Model
 final class Article: Codable {
-    #Unique<Article>([\.source, \.title, \.url])
+    #Unique<Article>([\.source, \.title, \.url, \.publishedAt])
     
     var source: Source
     var author: String?
