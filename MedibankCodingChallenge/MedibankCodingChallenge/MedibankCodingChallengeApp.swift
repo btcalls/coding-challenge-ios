@@ -12,7 +12,7 @@ import SwiftData
 struct MedibankCodingChallengeApp: App {
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            HeadlinesView()
         }
     }
 }

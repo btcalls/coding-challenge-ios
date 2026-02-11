@@ -37,4 +37,8 @@ extension Logger {
         
         bundleLogger.trace("\(lines.joined(separator: "\n"))")
     }
+    
+    static func log(_ error: Error) {
+        bundleLogger.error("\(error.localizedDescription)")
+    }
 }

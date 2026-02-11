@@ -40,14 +40,17 @@
 		4946272F2F39CBA800805A5C /* Exceptions for "MedibankCodingChallenge" folder in "MedibankCodingChallengeTests" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
-				Database/MockSwiftDataManager.swift,
 				Database/Models/Article.swift,
 				Database/Models/Source.swift,
 				"Extensions/Bundle+Extensions.swift",
+				"Extensions/JSON+Extensions.swift",
 				"Extensions/Logger+Extensions.swift",
 				Network/APIClient.swift,
 				Network/APIResponse.swift,
 				Network/Endpoint.swift,
+				Utils/Mock/MockSwiftDataManager.swift,
+				Utils/Mock/MockURLProtocol.swift,
+				Utils/Mock/MockValues.swift,
 			);
 			target = 4946254F2F39B38700805A5C /* MedibankCodingChallengeTests */;
 		};

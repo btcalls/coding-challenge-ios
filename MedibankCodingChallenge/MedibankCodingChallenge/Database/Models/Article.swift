@@ -10,24 +10,24 @@ import SwiftData
 
 @Model
 final class Article: Codable {
-    #Unique<Article>([\.source, \.author, \.url])
+    #Unique<Article>([\.source, \.title, \.url])
     
     var source: Source
-    var author: String
+    var author: String?
     var title: String
     var articleDescription: String
     var url: URL
-    var thumbnail: URL
+    var thumbnail: URL?
     var publishedAt: Date
     var isSaved: Bool
     
     init(
         source: Source,
-        author: String,
+        author: String? = nil,
         title: String,
         articleDescription: String,
         url: URL,
-        thumbnail: URL,
+        thumbnail: URL?,
         publishedAt: Date,
         isSaved: Bool = false
     ) {
@@ -51,12 +51,11 @@ final class Article: Codable {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         
         source = try container.decode(Source.self, forKey: .source)
-        author = try container.decode(String.self, forKey: .author)
+        author = try container.decodeIfPresent(String.self, forKey: .author)
         title = try container.decode(String.self, forKey: .title)
-        articleDescription = try container
-            .decode(String.self, forKey: .articleDescription)
+        articleDescription = try container.decode(String.self, forKey: .articleDescription)
         url = try container.decode(URL.self, forKey: .url)
-        thumbnail = try container.decode(URL.self, forKey: .thumbnail)
+        thumbnail = try container.decodeIfPresent(URL.self, forKey: .thumbnail)
         publishedAt = try container.decode(Date.self, forKey: .publishedAt)
         isSaved = false
     }
