@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import WebKit
 
 struct HeadlinesView: View {
     @StateObject private var viewModel = HeadlinesViewModel()
@@ -14,9 +15,15 @@ struct HeadlinesView: View {
         NavigationStack {
             List(viewModel.data, id: \.url) { article in
                 LazyVStack(spacing: Layout.Spacing.regular) {
-                    ArticleRow(article: article)
-                        .redacted(reason: viewModel.isLoading ? .placeholder : [])
+                    NavigationLink(value: article) {
+                        ArticleRow(article: article)
+                            .redacted(reason: viewModel.isLoading ? .placeholder : [])
+                    }
                 }
+            }
+            .navigationDestination(for: Article.self) {
+                WebView(url: $0.url)
+                    .webViewBackForwardNavigationGestures(.disabled)
             }
             .emptyView(
                 if: viewModel.errorMessage != nil && viewModel.data.count == 0,
