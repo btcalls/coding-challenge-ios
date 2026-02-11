@@ -43,6 +43,11 @@
 				Database/MockSwiftDataManager.swift,
 				Database/Models/Article.swift,
 				Database/Models/Source.swift,
+				"Extensions/Bundle+Extensions.swift",
+				"Extensions/Logger+Extensions.swift",
+				Network/APIClient.swift,
+				Network/APIResponse.swift,
+				Network/Endpoint.swift,
 			);
 			target = 4946254F2F39B38700805A5C /* MedibankCodingChallengeTests */;
 		};

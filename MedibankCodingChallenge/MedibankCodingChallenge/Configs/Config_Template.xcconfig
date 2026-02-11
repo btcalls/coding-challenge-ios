@@ -1,0 +1,12 @@
+//
+//  Config_Template.xcconfig
+//  MedibankCodingChallenge
+//
+//  Created by Jason Jon Carreos on 11/2/2026.
+//
+
+// Configuration settings file format documentation can be found at:
+// https://developer.apple.com/documentation/xcode/adding-a-build-configuration-file-to-your-project
+
+CONFIG_API_HOST =
+CONFIG_API_KEY = 

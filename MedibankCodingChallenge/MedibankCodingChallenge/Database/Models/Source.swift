@@ -9,7 +9,7 @@ import Foundation
 import SwiftData
 
 @Model
-final class Source: Decodable {
+final class Source: Codable {
     #Unique<Source>([\.name])
     
     var id: String?
@@ -30,8 +30,15 @@ final class Source: Decodable {
     required init(from decoder: any Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         
-        id = try container.decode(String.self, forKey: .id)
+        id = try container.decodeIfPresent(String.self, forKey: .id)
         name = try container.decode(String.self, forKey: .name)
         articles = []
+    }
+    
+    func encode(to encoder: any Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        
+        try container.encode(id, forKey: .id)
+        try container.encode(name, forKey: .name)
     }
 }
