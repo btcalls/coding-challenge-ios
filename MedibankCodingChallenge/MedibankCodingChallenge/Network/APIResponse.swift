@@ -5,7 +5,7 @@
 //  Created by Jason Jon Carreos on 10/2/2026.
 //
 
-protocol APIResponse: Decodable {
+protocol APIResponse: Codable {
     associatedtype Value: Decodable
     
     var status: String { get }

@@ -10,25 +10,21 @@ import os
 
 /// Common HTTP methods supported by the networking layer.
 enum HTTPMethod: String, Sendable {
-    case get = "GET"
+    case GET
 }
 
 /// Errors that can be thrown by the networking layer.
 enum APIError: Error, LocalizedError, Sendable {
     case invalidURL
-    case transportError(underlying: Error)
     case invalidResponse
     case serverError(statusCode: Int, data: Data)
     case decodingFailed(underlying: Error)
-    case cancelled
+    case unknown(underlying: Error)
 
     var errorDescription: String? {
         switch self {
         case .invalidURL:
             return "The URL could not be constructed."
-        
-        case .transportError(let underlying):
-            return "Network transport failed: \(underlying.localizedDescription)"
         
         case .invalidResponse:
             return "The server returned an invalid response."
@@ -39,30 +35,9 @@ enum APIError: Error, LocalizedError, Sendable {
         case .decodingFailed(let underlying):
             return "Failed to decode response: \(underlying.localizedDescription)"
         
-        case .cancelled:
-            return "The request was cancelled."
+        case .unknown(let underlying):
+            return underlying.localizedDescription
         }
-    }
-}
-
-/// A lightweight description of an API endpoint.
-/// Provide the expected `Response` type at the call-site.
-struct Endpoint<Response>: Sendable {
-    var path: String
-    var method: HTTPMethod
-    var queryItems: [URLQueryItem]
-    var headers: APIClient.Headers
-
-    init(
-        path: String = "",
-        method: HTTPMethod = .get,
-        queryItems: [URLQueryItem] = [],
-        headers: APIClient.Headers = [:]
-    ) {
-        self.path = path
-        self.method = method
-        self.queryItems = queryItems
-        self.headers = headers
     }
 }
 
@@ -80,10 +55,8 @@ final class APIClient: @unchecked Sendable {
     /// - Parameters:
     ///   - baseURL: The base URL for all endpoints (e.g., https://api.example.com).
     ///   - session: The URLSession to use. Defaults to `.shared`.
-    ///   - encoder: JSON encoder for encoding request bodies.
     ///   - decoder: JSON decoder for decoding responses.
     ///   - defaultHeaders: Headers applied to every request unless overridden per-endpoint.
-    ///   - interceptor: Optional hook to modify a request before sending (e.g., attach auth tokens).
     ///   - enableLogging: When true, prints basic request/response logs to the console.
     init(
         baseURL: URL,
@@ -112,58 +85,25 @@ final class APIClient: @unchecked Sendable {
             Logger.log(request: request)
         }
         
-        do {
-            let (data, response) = try await session.data(for: request)
-            
-            guard let http = response as? HTTPURLResponse else {
-                throw APIError.invalidResponse
-            }
-            
-            if enableLogging {
-                Logger.log(response: http, data: data)
-            }
-            
-            guard (200...299).contains(http.statusCode) else {
-                throw APIError.serverError(statusCode: http.statusCode, data: data)
-            }
-            
-            // Special-case decoding for Data
-            if Response.self == Data.self, let cast = data as? Response {
-                return cast
-            }
-            
-            do {
-                if let json = try? JSONSerialization.jsonObject(
-                    with: data,
-                    options: []
-                ) {
-                    print(json)
-                }
-                
-                return try decoder.decode(Response.self, from: data)
-            } catch {
-                throw APIError.decodingFailed(underlying: error)
-            }
-        } catch {
-            if let urlError = error as? URLError {
-                if urlError.code == .cancelled {
-                    throw APIError.cancelled
-                }
-                
-                throw APIError.transportError(underlying: urlError)
-            }
-            
-            if let apiError = error as? APIError {
-                throw apiError
-            }
-            
-            throw APIError.transportError(underlying: error)
+        let (data, response) = try await session.data(for: request)
+        
+        guard let http = response as? HTTPURLResponse else {
+            throw APIError.invalidResponse
         }
-    }
-    
-    /// Sends a request and returns the raw `Data` response without attempting to decode.
-    func sendRaw(_ endpoint: Endpoint<Data>) async throws -> Data {
-        try await send(endpoint)
+        
+        if enableLogging {
+            Logger.log(response: http, data: data)
+        }
+        
+        guard (200...299).contains(http.statusCode) else {
+            throw APIError.serverError(statusCode: http.statusCode, data: data)
+        }
+        
+        do {
+            return try decoder.decode(Response.self, from: data)
+        } catch {
+            throw APIError.decodingFailed(underlying: error)
+        }
     }
     
     func buildRequest<Response>(for endpoint: Endpoint<Response>) async throws -> URLRequest {
@@ -176,6 +116,7 @@ final class APIClient: @unchecked Sendable {
             // Avoid empty query key-value pairs; keep duplicates as provided.
             components?.queryItems = endpoint.queryItems
         }
+        
         guard let url = components?.url else {
             throw APIError.invalidURL
         }
@@ -185,11 +126,11 @@ final class APIClient: @unchecked Sendable {
 
         // Merge default headers with endpoint-specific headers (endpoint wins on conflicts)
         let headers = defaultHeaders.merging(endpoint.headers, uniquingKeysWith: { _, new in new })
-
+        
         for (key, value) in headers {
             request.setValue(value, forHTTPHeaderField: key)
         }
-
+        
         return request
     }
 }

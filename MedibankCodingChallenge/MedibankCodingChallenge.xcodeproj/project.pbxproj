@@ -47,6 +47,7 @@
 				"Extensions/Logger+Extensions.swift",
 				Network/APIClient.swift,
 				Network/APIResponse.swift,
+				Network/Endpoint.swift,
 			);
 			target = 4946254F2F39B38700805A5C /* MedibankCodingChallengeTests */;
 		};

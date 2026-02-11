@@ -48,7 +48,10 @@ private func makeSession() -> URLSession {
 }
 
 private func makeClient(baseURL: URL) -> APIClient {
-    var headers: APIClient.Headers = [:]
+    var headers: APIClient.Headers = [
+        "content-type": "application/json; charset=utf-8",
+        "Accept": "application/json"
+    ]
     
     if let apiKey = Bundle.main.apiKey {
         headers["X-Api-Key"] = apiKey
@@ -75,6 +78,7 @@ private func httpResponse(url: URL,
 // MARK: - XCTest Suite
 
 final class APIClientTests: XCTestCase {
+    private let path = "everything"
     private let queryItems: [URLQueryItem] = [
         .init(name: "q", value: "Swift"),
         .init(name: "language", value: "en"),
@@ -82,8 +86,7 @@ final class APIClientTests: XCTestCase {
     ]
     
     func testBadRequest() async throws {
-        guard let value = Bundle.main.apiURL,
-              let base = URL(string: value) else {
+        guard let base = Bundle.main.apiURL else {
             fatalError("API values not provided.")
         }
         
@@ -95,14 +98,17 @@ final class APIClientTests: XCTestCase {
         ])
         
         MockURLProtocol.responseProvider = { request in
-            XCTAssertEqual(request.httpMethod, "GET")
-            XCTAssertEqual(request.url?.absoluteString, base.absoluteString)
+            XCTAssertEqual(request.httpMethod, HTTPMethod.GET.rawValue)
+            XCTAssertEqual(
+                request.url?.absoluteString,
+                base.appending(path: self.path).absoluteString
+            )
             
             return (httpResponse(url: request.url!, status: 400), errorBody)
         }
         
         do {
-            let endpoint = Endpoint<ArticlesAPIResponse>()
+            let endpoint = Endpoint<ArticlesAPIResponse>(path: path)
             _ = try await client.send(endpoint)
             
             XCTFail("Expected error to be thrown")
@@ -115,17 +121,16 @@ final class APIClientTests: XCTestCase {
     }
 
     func testBuildRequestHeadersAndQuery() async throws {
-        guard let value = Bundle.main.apiURL,
-              let base = URL(string: value),
+        guard let base = Bundle.main.apiURL,
               let apiKey = Bundle.main.apiKey else {
             fatalError("API values not provided.")
         }
         
         let client = makeClient(baseURL: base)
-        let endpoint = Endpoint<Data>(queryItems: queryItems)
+        let endpoint = Endpoint<Data>(path: path, queryItems: queryItems)
         let request = try await client.buildRequest(for: endpoint)
         
-        XCTAssertEqual(request.httpMethod, HTTPMethod.get.rawValue)
+        XCTAssertEqual(request.httpMethod, HTTPMethod.GET.rawValue)
         
         let urlString = try XCTUnwrap(request.url?.absoluteString)
         
@@ -138,8 +143,7 @@ final class APIClientTests: XCTestCase {
     }
     
     func testGETSuccessDecodes() async throws {
-        guard let value = Bundle.main.apiURL,
-              let base = URL(string: value) else {
+        guard let base = Bundle.main.apiURL else {
             fatalError("API values not provided.")
         }
         
@@ -153,20 +157,28 @@ final class APIClientTests: XCTestCase {
             thumbnail: URL(string: "https://images.macrumors.com/t/6K4a_PAoQ2OPtugA2uAOj6kUwS8=/1600x/article-new/2025/11/2026-Swift-Student-Challenge.jpg")!,
             publishedAt: try! Date("2026-02-06T16:48:13Z", strategy: .iso8601)
         )
-        let data = try JSONEncoder().encode(article)
+        let responseBody = ArticlesAPIResponse(status: "ok",
+                                               totalResults: 1,
+                                               articles: [article])
+        let data = try JSONEncoder().encode(responseBody)
         
         MockURLProtocol.responseProvider = { request in
-            XCTAssertEqual(request.httpMethod, "GET")
-            XCTAssertEqual(request.url?.absoluteString,
-                           base.appending(queryItems: self.queryItems).absoluteString)
+            XCTAssertEqual(request.httpMethod, HTTPMethod.GET.rawValue)
+            XCTAssertEqual(
+                request.url?.absoluteString,
+                base.appending(path: self.path)
+                    .appending(queryItems: self.queryItems)
+                    .absoluteString
+            )
             
             return (httpResponse(url: request.url!, status: 200), data)
         }
         
-        let endpoint = Endpoint<Article>(queryItems: queryItems)
+        let endpoint: Endpoint = .getArticles(queryItems)
         let result = try await client.send(endpoint)
-        let first = result//result.articles.first
+        let first = result.articles.first
         
+        XCTAssertTrue(result.articles.count > 0)
         XCTAssertEqual(first, article)
     }
 }

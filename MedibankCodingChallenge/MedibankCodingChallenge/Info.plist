@@ -4,7 +4,7 @@
 <dict>
 	<key>CONFIG_API_KEY</key>
 	<string>$(CONFIG_API_KEY)</string>
-	<key>CONFIG_API_URL</key>
-	<string>$(CONFIG_API_URL)</string>
+	<key>CONFIG_API_HOST</key>
+	<string>$(CONFIG_API_HOST)</string>
 </dict>
 </plist>

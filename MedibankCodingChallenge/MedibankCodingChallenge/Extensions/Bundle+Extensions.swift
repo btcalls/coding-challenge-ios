@@ -8,15 +8,20 @@
 import Foundation
 
 extension Bundle {
-    /// Retrieves URL as specified in the .xcconfig file.
-    var apiURL: String? {
-        guard let url = fetch("CONFIG_API_URL") as String? else {
+    /// Optional. Retrieves URL as specified in the .xcconfig file.
+    var apiURL: URL? {
+        guard let host = fetch("CONFIG_API_HOST") as String? else {
             return nil
         }
         
-        return "https://\(url)"
+        var components = URLComponents()
+        components.scheme = "https"
+        components.host = host
+        components.path = "/v2"
+        
+        return components.url
     }
-    /// Retrieves API key as specified in the .xcconfig file.
+    /// Optional. Retrieves API key as specified in the .xcconfig file.
     var apiKey: String? {
         return fetch("CONFIG_API_KEY") as String?
     }
