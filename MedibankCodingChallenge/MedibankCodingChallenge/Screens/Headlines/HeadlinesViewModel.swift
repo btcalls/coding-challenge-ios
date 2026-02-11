@@ -23,10 +23,10 @@ protocol AppViewModel: ObservableObject {
 final class HeadlinesViewModel: AppViewModel {
     typealias Value = [Article]
     
-    @Published var isLoading: Bool = false
+    @Published var isLoading: Bool = true
     @Published var errorMessage: String?
-    // Provided initial value as placeholder
-    @Published var data: [Article] = [MockValues.article, MockValues.article]
+    // Provided initial value as placeholder for loading state
+    @Published var data: [Article] = [MockValues.article]
     
     private let client: APIClient
     

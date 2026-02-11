@@ -12,7 +12,11 @@ import SwiftData
 struct MedibankCodingChallengeApp: App {
     var body: some Scene {
         WindowGroup {
-            HeadlinesView()
+            TabView {
+                Tab("Headlines", systemImage: "newspaper") {
+                    HeadlinesView()
+                }                    
+            }
         }
     }
 }

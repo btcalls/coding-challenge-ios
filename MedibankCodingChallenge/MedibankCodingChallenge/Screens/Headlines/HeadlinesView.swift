@@ -12,7 +12,7 @@ struct HeadlinesView: View {
     
     var body: some View {
         NavigationStack {
-            List(viewModel.data) { article in
+            List(viewModel.data, id: \.url) { article in
                 LazyVStack(spacing: Layout.Spacing.regular) {
                     ArticleRow(article: article)
                         .redacted(reason: viewModel.isLoading ? .placeholder : [])
