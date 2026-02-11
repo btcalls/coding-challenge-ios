@@ -25,7 +25,8 @@ final class HeadlinesViewModel: AppViewModel {
     
     @Published var isLoading: Bool = false
     @Published var errorMessage: String?
-    @Published var data: [Article] = []
+    // Provided initial value as placeholder
+    @Published var data: [Article] = [MockValues.article, MockValues.article]
     
     private let client: APIClient
     

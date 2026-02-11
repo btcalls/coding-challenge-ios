@@ -12,13 +12,10 @@ struct HeadlinesView: View {
     
     var body: some View {
         NavigationStack {
-            if viewModel.isLoading {
-                ProgressView()
-            }
-            
             List(viewModel.data) { article in
                 LazyVStack(spacing: Layout.Spacing.regular) {
                     ArticleRow(article: article)
+                        .redacted(reason: viewModel.isLoading ? .placeholder : [])
                 }
             }
             .emptyView(
@@ -42,6 +39,9 @@ struct HeadlinesView: View {
             )
             .navigationTitle("Your News")
             .task {
+                await viewModel.fetchArticles()
+            }
+            .refreshable {
                 await viewModel.fetchArticles()
             }
         }
