@@ -10,15 +10,15 @@ import Foundation
 struct MockValues {
     // MARK: - Models
     
-    static let source = Source(name: "MacRumors")
+    static let source = Source(name: "Gizmodo.com")
     static let article = Article(
         source: Self.source,
-        author: "Joe Rossignol",
-        title: "Swift Student Challenge Submissions Now Open Ahead of WWDC 2026",
-        articleDescription: "Apple today announced that submissions for the 2026 Swift Student Challenge are now open through Saturday, February 28.\n\n\n\n\n\nThe annual Swift Student Challenge gives eligible student developers around the world the opportunity to showcase their coding capabil…",
-        url: URL(string: "https://www.macrumors.com/2026/02/06/2026-swift-student-challenge-begins/")!,
-        thumbnail: URL(string: "https://images.macrumors.com/t/6K4a_PAoQ2OPtugA2uAOj6kUwS8=/1600x/article-new/2025/11/2026-Swift-Student-Challenge.jpg")!,
-        publishedAt: try! Date("2026-02-06T16:48:13Z", strategy: .iso8601)
+        author: "James Pero",
+        title: "The Best Gadgets of January 2026",
+        articleDescription: "If new gadgets are your thing, then there's arguably not a more fruitful month than January.",
+        url: URL(string: "https://gizmodo.com/best-gadgets-january-2026-2000714453")!,
+        thumbnail: URL(string: "https://gizmodo.com/app/uploads/2026/01/Best-gadgets-of-January-2026-1200x675.jpeg")!,
+        publishedAt: try! Date("2026-01-30T12:30:48Z", strategy: .iso8601)
     )
     
     // MARK: - API

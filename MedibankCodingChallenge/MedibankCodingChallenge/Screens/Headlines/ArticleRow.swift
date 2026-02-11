@@ -13,26 +13,35 @@ struct ArticleRow: View {
     let article: Article
     
     var body: some View {
-        HStack(alignment: .center) {
-            VStack(alignment: .leading) {
-                Text(article.title)
-                    .articleTitleStyle()
-                
-                if let author = article.author {
-                    Text("By \(author)")
-                        .secondaryTextStyle()
+        VStack(alignment: .leading) {
+            HStack(alignment: .top, spacing: Layout.Spacing.regular) {
+                VStack(alignment: .leading) {
+                    Text(article.title)
+                        .articleTitleStyle()
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                    
+                    if let author = article.author {
+                        Text(author)
+                            .secondaryTextStyle()
+                    }
                 }
                 
-                Text(article.articleDescription)
-                    .descriptionStyle()
-                    .lineLimit(2, reservesSpace: true)
+                CustomImage(
+                    url: article.thumbnail,
+                    thumbnailMaxDimension: Layout.Size.thumbnailMax
+                )
+                .frame(width: size, height: size)
+                .clipShape(.rect(
+                    cornerRadius: Layout.CornerRadius.regular,
+                    style: .continuous
+                ))
             }
             
-            CustomImage(url: article.thumbnail, thumbnailMaxDimension: size)
-                .frame(width: size, height: size)
-                .clipShape(.rect(cornerRadius: Layout.CornerRadius.regular))
+            Text(article.articleDescription)
+                .descriptionStyle()
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .lineLimit(2)
         }
-        .padding(.all, Layout.Padding.compact)
     }
 }
 

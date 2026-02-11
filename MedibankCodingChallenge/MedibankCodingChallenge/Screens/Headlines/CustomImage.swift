@@ -2,7 +2,7 @@ import SwiftUI
 import Combine
 import os
 
-// Simple in-memory image cache keyed by URL.
+/// Simple in-memory image cache keyed by URL.
 private actor ImageCache {
     static let shared = ImageCache()
     
@@ -17,7 +17,7 @@ private actor ImageCache {
     }
 }
 
-// Loader that downloads and caches images. Supports downscaling for thumbnails.
+/// Loader that downloads and caches images. Supports downscaling for thumbnails.
 @MainActor
 private final class ImageLoader: ObservableObject {
     enum State: Equatable {
@@ -47,13 +47,12 @@ private final class ImageLoader: ObservableObject {
         task?.cancel()
         
         guard let url else {
-            state = .failure
+            state = .idle
             
             return
         }
         
         state = .loading
-
         task = Task { [weak self] in
             // Check cache first
             if let cached = await ImageCache.shared.image(for: url) {
@@ -71,6 +70,7 @@ private final class ImageLoader: ObservableObject {
                     return
                 }
                 
+                // Check if HTTP request made was a success
                 guard let http = response as? HTTPURLResponse,
                         (200..<300).contains(http.statusCode) else {
                     await MainActor.run {
@@ -80,6 +80,7 @@ private final class ImageLoader: ObservableObject {
                     return
                 }
                 
+                // Image from request data
                 guard var image = UIImage(data: data) else {
                     await MainActor.run {
                         self?.state = .failure
@@ -88,10 +89,12 @@ private final class ImageLoader: ObservableObject {
                     return
                 }
 
+                // Option to downscale image
                 if let maxDim = thumbnailMaxDimension, maxDim > 0 {
                     image = image.downscaled(maxDimension: maxDim)
                 }
 
+                // Stor to cache and update UI state
                 await ImageCache.shared.insert(image, for: url)
                 await MainActor.run {
                     self?.state = .success(image)
@@ -112,7 +115,9 @@ private final class ImageLoader: ObservableObject {
 }
 
 private extension UIImage {
-    // Downscale maintaining aspect ratio so that max(width, height) == maxDimension
+    /// Downscale maintaining aspect ratio so that max(width, height) == maxDimension
+    /// - Parameter maxDimension: Maximum height/width of image as basis for downscaling.
+    /// - Returns: Downscaled `UIImage` instance.
     func downscaled(maxDimension: CGFloat) -> UIImage {
         guard maxDimension > 0 else {
             return self
@@ -139,10 +144,11 @@ private extension UIImage {
 }
 
 struct CustomImage: View {
+    @Environment(\.redactionReasons) private var redactionReasons
+    
     let url: URL?
-    var thumbnailMaxDimension: CGFloat? = Layout.Size.thumbnailMax
+    var thumbnailMaxDimension: CGFloat? = nil
     var contentMode: ContentMode = .fill
-    var cornerRadius: CGFloat = Layout.CornerRadius.regular
     var showsActivity: Bool = true
 
     @StateObject private var loader = ImageLoader()
@@ -160,7 +166,6 @@ struct CustomImage: View {
                 Image(uiImage: uiImage)
                     .resizable()
                     .aspectRatio(contentMode: contentMode)
-                    .clipShape(RoundedRectangle(cornerRadius: cornerRadius, style: .continuous))
                     .transition(.opacity)
                 
             case .failure:
@@ -168,7 +173,11 @@ struct CustomImage: View {
             }
         }
         .onAppear {
-            loader.load(from: url, thumbnailMaxDimension: thumbnailMaxDimension)
+            // Only initiate loading of images if it is not being
+            // rendered as a skeleton view (e.g. during loading)
+            if redactionReasons == [] {
+                loader.load(from: url, thumbnailMaxDimension: thumbnailMaxDimension)
+            }
         }
         .onChange(of: url) { _, newURL in
             loader.load(from: newURL, thumbnailMaxDimension: thumbnailMaxDimension)
@@ -177,12 +186,17 @@ struct CustomImage: View {
             loader.cancel()
         }
     }
+    
+    @ViewBuilder
+    private var backgroundView: some View {
+        Rectangle()
+            .fill(.quaternary)
+    }
 
     @ViewBuilder
     private var activityView: some View {
         if showsActivity && (loader.state == .loading || loader.state == .idle) {
-            RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
-                .fill(.quaternary)
+            backgroundView
                 .overlay {
                     ProgressView().progressViewStyle(.circular)
                 }
@@ -191,17 +205,26 @@ struct CustomImage: View {
 
     @ViewBuilder
     private var placeholderView: some View {
-        RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
-            .fill(.quaternary)
-            .overlay(Image(systemName: "photo").foregroundStyle(.tertiary))
+        if redactionReasons == [] {
+            backgroundView
+                .overlay {
+                    Image(systemName: "photo.fill")
+                        .foregroundStyle(.tertiary)
+                        .font(.title3)
+                }
+        } else {
+            backgroundView
+        }
     }
     
     @ViewBuilder
     private var failureView: some View {
-        RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
-            .fill(.quaternary)
-            .overlay(Image(systemName: "photo.trianglebadge.exclamationmark")
-                .foregroundStyle(.tertiary))
+        backgroundView
+            .overlay {
+                Image(systemName: "photo.trianglebadge.exclamationmark")
+                    .foregroundStyle(.tertiary)
+                    .font(.title3)
+            }
     }
 }
 
