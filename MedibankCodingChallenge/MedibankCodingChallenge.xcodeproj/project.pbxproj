@@ -45,6 +45,7 @@
 				"Extensions/Bundle+Extensions.swift",
 				"Extensions/JSON+Extensions.swift",
 				"Extensions/Logger+Extensions.swift",
+				"Extensions/String+Extensions.swift",
 				Network/APIClient.swift,
 				Network/APIResponse.swift,
 				Network/Endpoint.swift,

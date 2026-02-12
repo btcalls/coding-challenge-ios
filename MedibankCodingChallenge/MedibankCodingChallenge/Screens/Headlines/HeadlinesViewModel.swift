@@ -5,19 +5,9 @@
 //  Created by Jason Jon Carreos on 11/2/2026.
 //
 
-import SwiftUI
+import Foundation
 import Combine
-
-protocol AppViewModel: ObservableObject {
-    associatedtype Value
-    
-    /// Flag to signify if any task or action is in progress. Add `@Published` to allow observation.
-    var isLoading: Bool { get }
-    /// Optional. Error message from failed task or action. Add `@Published` to allow observation.
-    var errorMessage: String? { get }
-    /// Data fetched from performed task or action. Add `@Published` to allow observation.
-    var data: Value { get }
-}
+import SwiftData
 
 @MainActor
 final class HeadlinesViewModel: AppViewModel {
@@ -27,8 +17,10 @@ final class HeadlinesViewModel: AppViewModel {
     @Published var errorMessage: String?
     // Provided initial value as placeholder for loading state
     @Published var data: [Article] = [MockValues.article]
+    @Published var fetchInfo: String = ""
     
     private let client: APIClient
+    private var hasLoadedOnce = false
     
     init() {
         guard let base = Bundle.main.apiURL else {
@@ -38,13 +30,31 @@ final class HeadlinesViewModel: AppViewModel {
         self.client = APIClient(baseURL: base, enableLogging: true)
     }
     
+    @MainActor
+    func fetchArticlesIfNeeded() async {
+        guard !hasLoadedOnce else {
+            return
+        }
+        
+        hasLoadedOnce = true
+        
+        await fetchArticles()
+    }
+    
     func fetchArticles() async {
         defer {
             isLoading = false
+            
+            if let _ = errorMessage {
+                fetchInfo = "Failed fetching articles."
+            } else {
+                fetchInfo = "Updated last \(Date().formatted(date: .abbreviated, time: .shortened))"
+            }
         }
         
         do {
             isLoading = true
+            fetchInfo = "Connecting..."
             
             // TODO: As property
             let queryItems: [URLQueryItem] = [
@@ -62,5 +72,12 @@ final class HeadlinesViewModel: AppViewModel {
         } catch {
             errorMessage = error.localizedDescription
         }
+    }
+    
+    func save(article: Article) {
+        article.isSaved = true
+        
+        SwiftDataManager.shared.container?.mainContext.insert(article)
+        try? SwiftDataManager.shared.container?.mainContext.save()
     }
 }

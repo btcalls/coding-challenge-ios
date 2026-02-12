@@ -19,6 +19,14 @@ struct HeadlinesView: View {
                         ArticleRow(article: article)
                             .redacted(reason: viewModel.isLoading ? .placeholder : [])
                     }
+                    .swipeActions {
+                        Button {
+                            viewModel.save(article: article)
+                        } label: {
+                            Label("Save", systemImage: "bookmark")
+                        }
+                        .tint(.yellow)
+                    }
                 }
             }
             .navigationDestination(for: Article.self) {
@@ -26,7 +34,7 @@ struct HeadlinesView: View {
                     .webViewBackForwardNavigationGestures(.disabled)
             }
             .emptyView(
-                if: viewModel.errorMessage != nil && viewModel.data.count == 0,
+                if: viewModel.errorMessage != nil || viewModel.data.isEmpty,
                 label: Label("No Articles", systemImage: "newspaper"),
                 description: {
                     Text("Articles from selected sources will appear here.")
@@ -45,12 +53,13 @@ struct HeadlinesView: View {
                 }
             )
             .navigationTitle("Your News")
+            .navigationSubtitle(viewModel.fetchInfo)
             .refreshable {
                 await viewModel.fetchArticles()
             }
         }
-        .task(id: "initial-load") {
-            await viewModel.fetchArticles()
+        .task(id: "initial-load-articles") {
+            await viewModel.fetchArticlesIfNeeded()
         }
     }
 }
