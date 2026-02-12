@@ -52,6 +52,7 @@ final class SourcesViewModel: AppViewModel {
         do {
             isLoading = true
             
+            // Configure constant query items for endpoint
             let queryItems: [URLQueryItem] = [
                 .init(name: "language", value: "en")
             ]

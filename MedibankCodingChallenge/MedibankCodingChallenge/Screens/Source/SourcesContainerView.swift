@@ -42,7 +42,7 @@ struct SourcesContainerView: View {
     
     var body: some View {
         NavigationStack {
-            SourcesView(viewModel: viewModel, mode: isEditing ? .edit : .view)
+            SourcesView(viewModel, mode: isEditing ? .edit : .view)
                 .navigationTitle("Article Sources")
                 .toolbar {
                     toolbarContent
