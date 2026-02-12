@@ -16,6 +16,7 @@ final class MockSwiftDataManager {
             let schema = Schema([
                 ArticleSource.self,
                 Article.self,
+                Source.self
             ])
             let configuration = ModelConfiguration(schema: schema, isStoredInMemoryOnly: true)
             container = try ModelContainer(

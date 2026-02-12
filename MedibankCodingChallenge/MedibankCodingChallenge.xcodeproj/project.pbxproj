@@ -42,6 +42,7 @@
 			membershipExceptions = (
 				Database/Models/Article.swift,
 				Database/Models/ArticleSource.swift,
+				Database/Models/Source.swift,
 				"Extensions/Bundle+Extensions.swift",
 				"Extensions/JSON+Extensions.swift",
 				"Extensions/Logger+Extensions.swift",

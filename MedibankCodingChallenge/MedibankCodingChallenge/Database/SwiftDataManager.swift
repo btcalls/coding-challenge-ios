@@ -18,6 +18,7 @@ final class SwiftDataManager {
             let schema = Schema([
                 ArticleSource.self,
                 Article.self,
+                Source.self,
             ])
             let modelConfiguration = ModelConfiguration(schema: schema,
                                                         isStoredInMemoryOnly: false)
