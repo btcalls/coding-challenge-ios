@@ -31,7 +31,7 @@ struct SourcesView: View {
                         get: { source.isSelected },
                         set: { source.isSelected = $0 }
                     ))
-                    .redacted(reason: viewModel.isLoading ? .placeholder : [])
+                    .asPlaceholder(reason: viewModel.isLoading)
                 }
             }
         }

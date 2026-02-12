@@ -24,7 +24,7 @@ struct SavedArticlesView: View {
                 LazyVStack(spacing: Layout.Spacing.regular) {
                     NavigationLink(value: article) {
                         ArticleRow(article: article)
-                            .redacted(reason: viewModel.isLoading ? .placeholder : [])
+                            .asPlaceholder(reason: viewModel.isLoading)
                     }
                     .swipeActions(allowsFullSwipe: true) {
                         Button(role: .destructive) {

@@ -11,6 +11,35 @@ struct SourcesContainerView: View {
     @State private var isEditing: Bool = false
     @StateObject private var viewModel = SourcesViewModel()
     
+    @ToolbarContentBuilder
+    private var toolbarContent: some ToolbarContent {
+        if isEditing {
+            ToolbarItem(placement: .destructiveAction) {
+                Button("Clear All") {
+                    viewModel.clearSelectedSources()
+                }
+            }
+            
+            ToolbarItem(placement: .cancellationAction) {
+                Button(role: .close) {
+                    isEditing = false
+                }
+            }
+        }
+        
+        ToolbarSpacer(placement: .confirmationAction)
+        
+        ToolbarItem(placement: .confirmationAction) {
+            Button(isEditing ? "Save" : "Select") {
+                if isEditing {
+                    viewModel.saveSelectedSources()
+                }
+                
+                isEditing.toggle()
+            }
+        }
+    }
+    
     var body: some View {
         NavigationStack {
             SourcesView(viewModel: viewModel)
@@ -19,25 +48,12 @@ struct SourcesContainerView: View {
                 .padding(.top, Layout.Padding.comfortable)
                 .padding(.horizontal, Layout.Padding.regular)
                 .toolbar {
-                    Button(isEditing ? "Save" : "Select") {
-                        // Saving changes
-                        if isEditing {
-                            onSave()
-                        }
-                        
-                        isEditing.toggle()
-                    }
+                    toolbarContent
                 }
         }
         .task(id: "initial-load-sources-from-storage") {
             await viewModel.fetchSources()
         }
-    }
-    
-    private func onSave() {
-        let _ = viewModel.data.filter { $0.isSelected }
-        
-        // TODO: Save to storage
     }
 }
 
