@@ -8,6 +8,8 @@
 import SwiftUI
 
 struct SavedArticlesView: View {
+    @StateObject private var viewModel = SavedArticlesViewModel()
+    
     private var info: AttributedString {
         let word = TabKey.headlines.rawValue
         let string = "Head to the \(word) tab to search for articles."
@@ -16,18 +18,29 @@ struct SavedArticlesView: View {
     }
     
     var body: some View {
-        List {
-        }
-        .emptyView(
-            if: true,
-            label: Label("No Saved Articles", systemImage: "bookmark.fill"),
-            description: {
-                VStack {
-                    Text("Saved articles will appear here.")
-                    Text(info)
+        NavigationStack {
+            List(viewModel.data) { article in
+                LazyVStack(spacing: Layout.Spacing.regular) {
+                    NavigationLink(value: article) {
+                        ArticleRow(article: article)
+                            .redacted(reason: viewModel.isLoading ? .placeholder : [])
+                    }
                 }
-            },
-        )
+            }
+            .emptyView(
+                if: viewModel.errorMessage != nil || viewModel.data.isEmpty,
+                label: Label("No Saved Articles", systemImage: "bookmark.fill"),
+                description: {
+                    VStack {
+                        Text("Saved articles will appear here.")
+                        Text(info)
+                    }
+                },
+            )
+        }
+        .task(id: "initial-load-saved-articles") {
+            viewModel.fetchSavedArticles()
+        }
     }
 }
 

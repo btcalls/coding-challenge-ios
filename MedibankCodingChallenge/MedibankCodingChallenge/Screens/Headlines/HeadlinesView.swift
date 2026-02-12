@@ -26,7 +26,7 @@ struct HeadlinesView: View {
                     .webViewBackForwardNavigationGestures(.disabled)
             }
             .emptyView(
-                if: viewModel.errorMessage != nil && viewModel.data.count == 0,
+                if: viewModel.errorMessage != nil || viewModel.data.isEmpty,
                 label: Label("No Articles", systemImage: "newspaper"),
                 description: {
                     Text("Articles from selected sources will appear here.")
@@ -49,7 +49,7 @@ struct HeadlinesView: View {
                 await viewModel.fetchArticles()
             }
         }
-        .task(id: "initial-load") {
+        .task(id: "initial-load-articles") {
             await viewModel.fetchArticles()
         }
     }
