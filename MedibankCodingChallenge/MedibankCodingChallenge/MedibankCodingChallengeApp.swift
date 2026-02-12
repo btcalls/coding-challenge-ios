@@ -15,7 +15,11 @@ struct MedibankCodingChallengeApp: App {
             TabView {
                 Tab("Headlines", systemImage: "newspaper") {
                     HeadlinesView()
-                }                    
+                }
+                
+                Tab("Saved", systemImage: "bookmark") {
+                    SavedArticlesView()
+                }
             }
         }
     }
