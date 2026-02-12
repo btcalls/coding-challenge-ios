@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import WebKit
 
 struct SavedArticlesView: View {
     @StateObject private var viewModel = SavedArticlesViewModel()
@@ -21,16 +22,22 @@ struct SavedArticlesView: View {
         NavigationStack {
             List(viewModel.data) { article in
                 LazyVStack(spacing: Layout.Spacing.regular) {
-                    ArticleRow(article: article)
-                        .redacted(reason: viewModel.isLoading ? .placeholder : [])
-                        .swipeActions(allowsFullSwipe: true) {
-                            Button(role: .destructive) {
-                                viewModel.delete(article: article)
-                            } label: {
-                                Label("Delete", systemImage: "trash")
-                            }
+                    NavigationLink(value: article) {
+                        ArticleRow(article: article)
+                            .redacted(reason: viewModel.isLoading ? .placeholder : [])
+                    }
+                    .swipeActions(allowsFullSwipe: true) {
+                        Button(role: .destructive) {
+                            viewModel.delete(article: article)
+                        } label: {
+                            Label("Delete", systemImage: "trash")
                         }
+                    }
                 }
+            }
+            .navigationDestination(for: Article.self) {
+                WebView(url: $0.url)
+                    .webViewBackForwardNavigationGestures(.disabled)
             }
             .emptyView(
                 if: viewModel.errorMessage != nil || viewModel.data.isEmpty,
