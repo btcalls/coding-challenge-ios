@@ -8,8 +8,6 @@
 import SwiftUI
 
 struct ArticleRow: View {
-    private let size: CGFloat = 120
-    
     let article: Article
     
     var body: some View {
@@ -18,7 +16,13 @@ struct ArticleRow: View {
                 VStack(alignment: .leading) {
                     Text(article.title)
                         .articleTitleStyle()
-                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .multilineTextAlignment(.leading)
+                        .truncationMode(.tail)
+                        .frame(
+                            maxWidth: .infinity,
+                            maxHeight: .infinity,
+                            alignment: .topLeading
+                        )
                     
                     if let author = article.author {
                         Text(author)
@@ -30,7 +34,7 @@ struct ArticleRow: View {
                     url: article.thumbnail,
                     thumbnailMaxDimension: Layout.Size.thumbnailMax
                 )
-                .frame(width: size, height: size)
+                .frame(width: Layout.Size.thumbnail, height: Layout.Size.thumbnail)
                 .clipShape(.rect(
                     cornerRadius: Layout.CornerRadius.regular,
                     style: .continuous

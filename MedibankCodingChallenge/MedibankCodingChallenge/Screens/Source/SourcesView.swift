@@ -34,6 +34,7 @@ struct SourcesView: View {
                     .asPlaceholder(reason: viewModel.isLoading)
                 }
             }
+            .padding(.top, Layout.Padding.comfortable)
         }
         .safeAreaBar(edge: .bottom, spacing: Layout.Spacing.regular) {
             if count > 0  {

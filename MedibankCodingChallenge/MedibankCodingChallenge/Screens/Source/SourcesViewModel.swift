@@ -48,4 +48,16 @@ final class SourcesViewModel: AppViewModel {
             errorMessage = error.localizedDescription
         }
     }
+    
+    func clearSelectedSources() {
+        data = data.map {
+            $0.isSelected = false
+            
+            return $0
+        }
+    }
+    
+    func saveSelectedSources() {
+        // TODO: 
+    }
 }
