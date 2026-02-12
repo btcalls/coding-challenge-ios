@@ -19,3 +19,11 @@ struct ArticlesAPIResponse: APIResponse {
     var totalResults: Int?
     var articles: [Value]
 }
+
+struct SourcesAPIResponse: APIResponse {
+    typealias Value = Source
+    
+    var status: String
+    var totalResults: Int?
+    var sources: [Value]
+}

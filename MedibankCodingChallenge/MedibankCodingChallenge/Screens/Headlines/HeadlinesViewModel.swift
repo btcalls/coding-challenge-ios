@@ -15,8 +15,7 @@ final class HeadlinesViewModel: AppViewModel {
     
     @Published var isLoading: Bool = true
     @Published var errorMessage: String?
-    // Provided initial value as placeholder for loading state
-    @Published var data: [Article] = [MockValues.article]
+    @Published var data: [Article] = MockValues.articles // Initial value as placeholder for loading state
     @Published var fetchInfo: String = ""
     
     private let client: APIClient
@@ -30,7 +29,6 @@ final class HeadlinesViewModel: AppViewModel {
         self.client = APIClient(baseURL: base, enableLogging: true)
     }
     
-    @MainActor
     func fetchArticlesIfNeeded() async {
         guard !hasLoadedOnce else {
             return

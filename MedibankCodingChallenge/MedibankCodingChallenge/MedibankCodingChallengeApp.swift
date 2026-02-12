@@ -11,6 +11,7 @@ import SwiftData
 enum TabKey: String {
     case headlines = "Headlines"
     case saved = "Saved"
+    case sources = "Sources"
 }
 
 @main
@@ -20,6 +21,10 @@ struct MedibankCodingChallengeApp: App {
             TabView {
                 Tab(TabKey.headlines.rawValue, systemImage: "newspaper") {
                     HeadlinesView()
+                }
+                
+                Tab(TabKey.sources.rawValue, systemImage: "network") {
+                    SourcesView()
                 }
                 
                 Tab(TabKey.saved.rawValue, systemImage: "bookmark") {

@@ -27,7 +27,7 @@ final class Article: Codable {
         title: String,
         articleDescription: String,
         url: URL,
-        thumbnail: URL?,
+        thumbnail: URL? = nil,
         publishedAt: Date,
         isSaved: Bool = false
     ) {
