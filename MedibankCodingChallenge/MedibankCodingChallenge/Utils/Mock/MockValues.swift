@@ -21,10 +21,10 @@ struct MockValues {
         publishedAt: try! Date("2026-01-30T12:30:48Z", strategy: .iso8601)
     )
     static let source = Source(
-        id: "axios",
-        name: "Axios",
-        url: URL(string: "https://www.axios.com")!,
-        category: "general"
+        id: "australian-financial-review",
+        name: "Australian Financial Review",
+        url: URL(string: "http://www.afr.com")!,
+        category: "business"
     )
     
     // MARK: - API

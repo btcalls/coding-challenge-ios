@@ -38,7 +38,6 @@ final class SourcesViewModel: AppViewModel {
             let queryItems: [URLQueryItem] = [
                 .init(name: "language", value: "en")
             ]
-            
             let result = try await client.send(.getSources(queryItems))
             
             data = result.sources

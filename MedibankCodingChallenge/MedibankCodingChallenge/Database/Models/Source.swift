@@ -28,7 +28,7 @@ final class Source: Codable {
     }
     
     private enum CodingKeys: String, CodingKey {
-        case id, name, url, category, isSelected
+        case id, name, url, category
     }
     
     required init(from decoder: any Decoder) throws {
@@ -38,7 +38,7 @@ final class Source: Codable {
         name = try container.decode(String.self, forKey: .name)
         url = try container.decode(URL.self, forKey: .url)
         category = try container.decode(String.self, forKey: .category)
-        isSelected = try container.decode(Bool.self, forKey: .isSelected)
+        isSelected = false
     }
     
     func encode(to encoder: any Encoder) throws {
@@ -48,6 +48,5 @@ final class Source: Codable {
         try container.encode(name, forKey: .name)
         try container.encode(url, forKey: .url)
         try container.encode(category, forKey: .category)
-        try container.encode(isSelected, forKey: .isSelected)
     }
 }

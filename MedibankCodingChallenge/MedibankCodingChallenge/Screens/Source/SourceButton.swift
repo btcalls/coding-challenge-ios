@@ -13,11 +13,15 @@ struct SourceButton: View {
     
     @ViewBuilder
     private var label: some View {
-        let systemImage = isSelected ? "checkmark.circle.fill" : "circle"
-        
-        Label(title, systemImage: systemImage)
-            .fontWeight(.medium)
-            .padding(.all, Layout.Padding.comfortable)
+        HStack(alignment: .center, spacing: Layout.Spacing.md) {
+            Image(systemName: isSelected ? "checkmark.circle.fill" : "circle")
+            Text(title)
+                .multilineTextAlignment(.leading)
+                .lineLimit(nil)
+                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .leading)
+        }
+        .padding(.all, Layout.Padding.comfortable)
+        .fontWeight(isSelected ? .medium : .regular)
     }
     
     var body: some View {
@@ -26,7 +30,7 @@ struct SourceButton: View {
         }, label: {
             label
         })
-        .background(isSelected ? Color.accentColor : Color.secondary)
+        .background(isSelected ? Color.accentColor : Color(.secondarySystemBackground))
         .tint(.primary)
         .clipShape(
             .rect(cornerRadius: Layout.CornerRadius.regular, style: .continuous)
@@ -38,9 +42,10 @@ struct SourceButton: View {
     @Previewable @State var text: String = "Not selected"
     @Previewable @State var source = MockValues.source
     
-    Text(source.isSelected ? "Selected" : "Not selected")
-    SourceButton(title: "Test", isSelected: Binding<Bool>(
+    SourceButton(title: source.name, isSelected: Binding<Bool>(
         get: { source.isSelected },
         set: { source.isSelected = $0 }
     ))
+    .frame(width: 250, height: 80)
 }
+
