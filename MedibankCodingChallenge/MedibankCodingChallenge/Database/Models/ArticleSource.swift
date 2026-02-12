@@ -9,8 +9,8 @@ import Foundation
 import SwiftData
 
 @Model
-final class Source: Codable {
-    #Unique<Source>([\.name])
+final class ArticleSource: Codable {
+    #Unique<ArticleSource>([\.name])
     
     var id: String?
     var name: String

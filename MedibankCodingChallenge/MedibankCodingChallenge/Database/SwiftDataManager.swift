@@ -16,7 +16,7 @@ final class SwiftDataManager {
     private init() {
         do {
             let schema = Schema([
-                Source.self,
+                ArticleSource.self,
                 Article.self,
             ])
             let modelConfiguration = ModelConfiguration(schema: schema,

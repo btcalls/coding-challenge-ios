@@ -10,7 +10,7 @@ import Foundation
 struct MockValues {
     // MARK: - Models
     
-    static let source = Source(name: "Gizmodo.com")
+    static let source = ArticleSource(name: "Gizmodo.com")
     static let article = Article(
         source: Self.source,
         author: "James Pero",
