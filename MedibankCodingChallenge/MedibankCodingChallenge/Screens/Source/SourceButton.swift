@@ -39,7 +39,6 @@ struct SourceButton: View {
 }
 
 #Preview {
-    @Previewable @State var text: String = "Not selected"
     @Previewable @State var source = MockValues.source
     
     SourceButton(title: source.name, isSelected: Binding<Bool>(

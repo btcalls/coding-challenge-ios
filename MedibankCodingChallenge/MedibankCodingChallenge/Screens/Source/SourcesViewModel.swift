@@ -15,7 +15,7 @@ final class SourcesViewModel: AppViewModel {
     
     @Published var isLoading: Bool = true
     @Published var errorMessage: String?
-    @Published var data: [Source] = []
+    @Published var data: [Source] = MockValues.sources // Initial value as placeholder for loading state
     
     private let client: APIClient
     

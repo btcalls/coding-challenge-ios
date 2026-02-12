@@ -15,8 +15,7 @@ final class HeadlinesViewModel: AppViewModel {
     
     @Published var isLoading: Bool = true
     @Published var errorMessage: String?
-    // Provided initial value as placeholder for loading state
-    @Published var data: [Article] = [MockValues.article]
+    @Published var data: [Article] = MockValues.articles // Initial value as placeholder for loading state
     @Published var fetchInfo: String = ""
     
     private let client: APIClient

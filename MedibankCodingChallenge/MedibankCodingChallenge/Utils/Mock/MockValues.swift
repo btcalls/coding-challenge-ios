@@ -10,6 +10,8 @@ import Foundation
 struct MockValues {
     // MARK: - Models
     
+    private static let url = URL(string: "http://test.com")!
+    
     static let articleSource = ArticleSource(name: "Gizmodo.com")
     static let article = Article(
         source: Self.articleSource,
@@ -20,12 +22,67 @@ struct MockValues {
         thumbnail: URL(string: "https://gizmodo.com/app/uploads/2026/01/Best-gadgets-of-January-2026-1200x675.jpeg")!,
         publishedAt: try! Date("2026-01-30T12:30:48Z", strategy: .iso8601)
     )
+    static let articles: [Article] = [
+        .init(
+            source: Self.articleSource,
+            title: .placeholder(length: 38),
+            articleDescription: .placeholder(length: 56),
+            url: url,
+            publishedAt: Date()
+        ),
+        .init(
+            source: Self.articleSource,
+            title: .placeholder(length: 42),
+            articleDescription: .placeholder(length: 56),
+            url: url,
+            publishedAt: Date()
+        ),
+        .init(
+            source: Self.articleSource,
+            title: .placeholder(length: 49),
+            articleDescription: .placeholder(length: 56),
+            url: url,
+            publishedAt: Date()
+        )
+    ]
     static let source = Source(
         id: "australian-financial-review",
         name: "Australian Financial Review",
         url: URL(string: "http://www.afr.com")!,
         category: "business"
     )
+    static let sources: [Source] = [
+        .init(
+            id: "1",
+            name: .placeholder(length: 10),
+            url: url,
+            category: "general"
+        ),
+        .init(
+            id: "2",
+            name: .placeholder(length: 10),
+            url: url,
+            category: "general"
+        ),
+        .init(
+            id: "3",
+            name: .placeholder(length: 10),
+            url: url,
+            category: "general"
+        ),
+        .init(
+            id: "4",
+            name: .placeholder(length: 10),
+            url: url,
+            category: "general"
+        ),
+        .init(
+            id: "5",
+            name: .placeholder(length: 10),
+            url: url,
+            category: "general"
+        )
+    ]
     
     // MARK: - API
     

@@ -12,10 +12,6 @@ struct SourcesView: View {
     
     var body: some View {
         ScrollView {
-            if viewModel.isLoading {
-                ProgressView().progressViewStyle(.circular)
-            }
-            
             LazyVGrid(columns: [
                 GridItem(.flexible()),
                 GridItem(.flexible())
@@ -25,6 +21,7 @@ struct SourcesView: View {
                         get: { source.isSelected },
                         set: { source.isSelected = $0 }
                     ))
+                    .redacted(reason: viewModel.isLoading ? .placeholder : [])
                 }
             }
         }
