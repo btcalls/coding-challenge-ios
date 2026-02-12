@@ -50,3 +50,11 @@ final class Source: Codable {
         try container.encode(category, forKey: .category)
     }
 }
+
+extension Source: Equatable {
+    static func == (lhs: Source, rhs: Source) -> Bool {
+        return (lhs.id == rhs.id &&
+                lhs.name == rhs.name &&
+                lhs.url == rhs.url)
+    }
+}

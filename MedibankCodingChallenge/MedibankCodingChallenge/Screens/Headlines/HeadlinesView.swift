@@ -57,6 +57,7 @@ struct HeadlinesView: View {
             .refreshable {
                 await viewModel.fetchArticles()
             }
+            .padding(.top, Layout.Padding.comfortable)
         }
         .task(id: "initial-load-articles") {
             await viewModel.fetchArticlesIfNeeded()

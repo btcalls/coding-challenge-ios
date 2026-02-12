@@ -6,9 +6,15 @@
 //
 
 import SwiftUI
+import Combine
 
+//struct SourcesView<VM: AppViewModel>: View where VM.Value == [Source] {
 struct SourcesView: View {
-    @StateObject private var viewModel = SourcesViewModel()
+    @ObservedObject private var viewModel: SourcesViewModel
+    
+    init(viewModel: SourcesViewModel) {
+        self.viewModel = viewModel
+    }
     
     var body: some View {
         ScrollView {
@@ -25,12 +31,11 @@ struct SourcesView: View {
                 }
             }
         }
-        .task(id: "initial-load-sources") {
-            await viewModel.fetchSources()
-        }
     }
 }
 
 #Preview {
-    SourcesView()
+    @Previewable @StateObject var viewModel = SourcesViewModel()
+    
+    SourcesView(viewModel: viewModel)
 }

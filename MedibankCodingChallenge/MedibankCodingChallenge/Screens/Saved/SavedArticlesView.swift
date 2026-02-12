@@ -50,6 +50,7 @@ struct SavedArticlesView: View {
                 },
             )
             .navigationTitle("Your Articles")
+            .padding(.top, Layout.Padding.comfortable)
         }
         .task(id: "initial-load-saved-articles") {
             viewModel.fetchSavedArticles()
