@@ -17,6 +17,7 @@ final class HeadlinesViewModel: AppViewModel {
     @Published var errorMessage: String?
     // Provided initial value as placeholder for loading state
     @Published var data: [Article] = [MockValues.article]
+    @Published var fetchInfo: String = ""
     
     private let client: APIClient
     private var hasLoadedOnce = false
@@ -43,10 +44,17 @@ final class HeadlinesViewModel: AppViewModel {
     func fetchArticles() async {
         defer {
             isLoading = false
+            
+            if let _ = errorMessage {
+                fetchInfo = "Failed fetching articles."
+            } else {
+                fetchInfo = "Updated last \(Date().formatted(date: .abbreviated, time: .shortened))"
+            }
         }
         
         do {
             isLoading = true
+            fetchInfo = "Connecting..."
             
             // TODO: As property
             let queryItems: [URLQueryItem] = [

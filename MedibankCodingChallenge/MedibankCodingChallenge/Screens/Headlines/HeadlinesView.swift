@@ -53,6 +53,7 @@ struct HeadlinesView: View {
                 }
             )
             .navigationTitle("Your News")
+            .navigationSubtitle(viewModel.fetchInfo)
             .refreshable {
                 await viewModel.fetchArticles()
             }
