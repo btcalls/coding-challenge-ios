@@ -19,6 +19,14 @@ struct HeadlinesView: View {
                         ArticleRow(article: article)
                             .redacted(reason: viewModel.isLoading ? .placeholder : [])
                     }
+                    .swipeActions {
+                        Button {
+                            viewModel.save(article: article)
+                        } label: {
+                            Label("Save", systemImage: "bookmark")
+                        }
+                        .tint(.yellow)
+                    }
                 }
             }
             .navigationDestination(for: Article.self) {
@@ -50,7 +58,7 @@ struct HeadlinesView: View {
             }
         }
         .task(id: "initial-load-articles") {
-            await viewModel.fetchArticles()
+            await viewModel.fetchArticlesIfNeeded()
         }
     }
 }

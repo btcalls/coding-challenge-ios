@@ -33,7 +33,7 @@ final class SavedArticlesViewModel: AppViewModel {
         
         let fetchDescriptor = FetchDescriptor<Article>(
             predicate: #Predicate { $0.isSaved },
-            sortBy: [SortDescriptor(\.publishedAt, order: .forward)]
+            sortBy: [SortDescriptor(\.publishedAt, order: .reverse)]
         )
         let articles = try? manager.container?.mainContext.fetch(
             fetchDescriptor

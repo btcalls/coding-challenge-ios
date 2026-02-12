@@ -7,6 +7,7 @@
 
 import Foundation
 import Combine
+import SwiftData
 
 @MainActor
 final class HeadlinesViewModel: AppViewModel {
@@ -18,6 +19,7 @@ final class HeadlinesViewModel: AppViewModel {
     @Published var data: [Article] = [MockValues.article]
     
     private let client: APIClient
+    private var hasLoadedOnce = false
     
     init() {
         guard let base = Bundle.main.apiURL else {
@@ -25,6 +27,17 @@ final class HeadlinesViewModel: AppViewModel {
         }
         
         self.client = APIClient(baseURL: base, enableLogging: true)
+    }
+    
+    @MainActor
+    func fetchArticlesIfNeeded() async {
+        guard !hasLoadedOnce else {
+            return
+        }
+        
+        hasLoadedOnce = true
+        
+        await fetchArticles()
     }
     
     func fetchArticles() async {
@@ -51,5 +64,12 @@ final class HeadlinesViewModel: AppViewModel {
         } catch {
             errorMessage = error.localizedDescription
         }
+    }
+    
+    func save(article: Article) {
+        article.isSaved = true
+        
+        SwiftDataManager.shared.container?.mainContext.insert(article)
+        try? SwiftDataManager.shared.container?.mainContext.save()
     }
 }
