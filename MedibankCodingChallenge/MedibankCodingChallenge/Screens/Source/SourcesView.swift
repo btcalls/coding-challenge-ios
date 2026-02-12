@@ -16,6 +16,10 @@ struct SourcesView: View {
         self.viewModel = viewModel
     }
     
+    private var count: Int {
+        return viewModel.data.filter { $0.isSelected }.count
+    }
+    
     var body: some View {
         ScrollView {
             LazyVGrid(columns: [
@@ -29,6 +33,14 @@ struct SourcesView: View {
                     ))
                     .redacted(reason: viewModel.isLoading ? .placeholder : [])
                 }
+            }
+        }
+        .safeAreaBar(edge: .bottom, spacing: Layout.Spacing.regular) {
+            if count > 0  {
+                Text("\(count) selected")
+                    .padding(.all, Layout.Padding.regular)
+                    .glassEffect(.regular, in: .capsule)
+                    .animation(.easeInOut, value: count)
             }
         }
     }

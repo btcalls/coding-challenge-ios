@@ -8,7 +8,6 @@
 import SwiftUI
 
 struct SourcesContainerView: View {
-    @State private var info: String = "None selected"
     @State private var isEditing: Bool = false
     @StateObject private var viewModel = SourcesViewModel()
     
@@ -17,7 +16,6 @@ struct SourcesContainerView: View {
             SourcesView(viewModel: viewModel)
                 .disabled(!isEditing)
                 .navigationTitle("Article Sources")
-                .navigationSubtitle(info)
                 .padding(.top, Layout.Padding.comfortable)
                 .padding(.horizontal, Layout.Padding.regular)
                 .toolbar {
@@ -37,9 +35,9 @@ struct SourcesContainerView: View {
     }
     
     private func onSave() {
-        let selected = viewModel.data.filter { $0.isSelected }
+        let _ = viewModel.data.filter { $0.isSelected }
         
-        info = selected.isEmpty ? "None selected" : "\(selected.count) selected"
+        // TODO: Save to storage
     }
 }
 
