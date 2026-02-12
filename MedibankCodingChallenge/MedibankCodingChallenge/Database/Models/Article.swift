@@ -12,7 +12,7 @@ import SwiftData
 final class Article: Codable {
     #Unique<Article>([\.source, \.title, \.url, \.publishedAt])
     
-    var source: Source
+    var source: ArticleSource
     var author: String?
     var title: String
     var articleDescription: String
@@ -22,7 +22,7 @@ final class Article: Codable {
     var isSaved: Bool
     
     init(
-        source: Source,
+        source: ArticleSource,
         author: String? = nil,
         title: String,
         articleDescription: String,
@@ -50,7 +50,7 @@ final class Article: Codable {
     required init(from decoder: any Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         
-        source = try container.decode(Source.self, forKey: .source)
+        source = try container.decode(ArticleSource.self, forKey: .source)
         author = try container.decodeIfPresent(String.self, forKey: .author)
         title = try container.decode(String.self, forKey: .title)
         articleDescription = try container.decode(String.self, forKey: .articleDescription)

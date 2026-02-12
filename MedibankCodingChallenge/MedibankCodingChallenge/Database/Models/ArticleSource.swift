@@ -2,40 +2,37 @@
 //  Source.swift
 //  MedibankCodingChallenge
 //
-//  Created by Jason Jon Carreos on 12/2/2026.
+//  Created by Jason Jon Carreos on 9/2/2026.
 //
 
 import Foundation
 import SwiftData
 
 @Model
-final class Source: Codable {
-    #Unique<Source>([\.id, \.name])
+final class ArticleSource: Codable {
+    #Unique<ArticleSource>([\.name])
     
-    @Attribute(.unique)
-    var id: String
+    var id: String?
     var name: String
-    var url: URL
-    var category: String
+    @Relationship(deleteRule: .cascade, inverse: \Article.source)
+    var articles: [Article]
     
-    init (id: String, name: String, url: URL, category: String) {
+    init(id: String? = nil, name: String, articles: [Article] = []) {
         self.id = id
         self.name = name
-        self.url = url
-        self.category = category
+        self.articles = articles
     }
     
     private enum CodingKeys: String, CodingKey {
-        case id, name, url, category
+        case id, name, articles
     }
     
     required init(from decoder: any Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         
-        id = try container.decode(String.self, forKey: .id)
+        id = try container.decodeIfPresent(String.self, forKey: .id)
         name = try container.decode(String.self, forKey: .name)
-        url = try container.decode(URL.self, forKey: .category)
-        category = try container.decode(String.self, forKey: .category)
+        articles = []
     }
     
     func encode(to encoder: any Encoder) throws {
@@ -43,7 +40,5 @@ final class Source: Codable {
         
         try container.encode(id, forKey: .id)
         try container.encode(name, forKey: .name)
-        try container.encode(url, forKey: .url)
-        try container.encode(category, forKey: .category)
     }
 }
