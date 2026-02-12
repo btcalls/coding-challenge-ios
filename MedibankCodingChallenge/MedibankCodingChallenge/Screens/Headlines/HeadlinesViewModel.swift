@@ -30,7 +30,6 @@ final class HeadlinesViewModel: AppViewModel {
         self.client = APIClient(baseURL: base, enableLogging: true)
     }
     
-    @MainActor
     func fetchArticlesIfNeeded() async {
         guard !hasLoadedOnce else {
             return

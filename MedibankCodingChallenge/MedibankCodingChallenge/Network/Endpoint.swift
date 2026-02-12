@@ -32,6 +32,12 @@ extension Endpoint {
     static func getArticles(
         _ queryItems: [URLQueryItem]
     ) -> Endpoint<ArticlesAPIResponse> {
-        .init(path: "everything", queryItems: queryItems)
+        return .init(path: "everything", queryItems: queryItems)
+    }
+    
+    static func getSources(
+        _ queryItems: [URLQueryItem]
+    ) -> Endpoint<SourcesAPIResponse>{
+        return .init(path: "top-headlines/sources", queryItems: queryItems)
     }
 }
