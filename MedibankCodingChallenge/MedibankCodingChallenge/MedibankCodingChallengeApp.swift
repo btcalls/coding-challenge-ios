@@ -8,16 +8,21 @@
 import SwiftUI
 import SwiftData
 
+enum TabKey: String {
+    case headlines = "Headlines"
+    case saved = "Saved"
+}
+
 @main
 struct MedibankCodingChallengeApp: App {
     var body: some Scene {
         WindowGroup {
             TabView {
-                Tab("Headlines", systemImage: "newspaper") {
+                Tab(TabKey.headlines.rawValue, systemImage: "newspaper") {
                     HeadlinesView()
                 }
                 
-                Tab("Saved", systemImage: "bookmark") {
+                Tab(TabKey.saved.rawValue, systemImage: "bookmark") {
                     SavedArticlesView()
                 }
             }

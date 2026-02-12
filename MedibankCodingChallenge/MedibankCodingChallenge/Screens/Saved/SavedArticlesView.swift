@@ -8,6 +8,13 @@
 import SwiftUI
 
 struct SavedArticlesView: View {
+    private var info: AttributedString {
+        let word = TabKey.headlines.rawValue
+        let string = "Head to the \(word) tab to search for articles."
+        
+        return string.highlight(word)
+    }
+    
     var body: some View {
         List {
         }
@@ -15,18 +22,11 @@ struct SavedArticlesView: View {
             if: true,
             label: Label("No Saved Articles", systemImage: "bookmark.fill"),
             description: {
-                Text("Saved articles will appear here.")
+                VStack {
+                    Text("Saved articles will appear here.")
+                    Text(info)
+                }
             },
-            actions: {
-                Button(action: {
-                    // TODO: Switch to Headlines tab
-                }, label: {
-                    Text("Check Headlines")
-                        .fontWeight(.medium)
-                        .padding(.all, Layout.Padding.compact)
-                })
-                .buttonStyle(.glassProminent)
-            }
         )
     }
 }
