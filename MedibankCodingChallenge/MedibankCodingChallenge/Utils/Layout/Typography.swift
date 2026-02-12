@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct Typography {
+enum Typography {
     static let articleTitle: Font = .system(.headline, weight: .bold)
     static let secondaryText: Font = .system(.subheadline, weight: .medium)
     static let description: Font = .system(.body, weight: .light)

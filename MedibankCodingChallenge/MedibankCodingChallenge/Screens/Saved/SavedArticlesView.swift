@@ -49,7 +49,7 @@ struct SavedArticlesView: View {
                     }
                 },
             )
-            .navigationTitle("Saved Articles")
+            .navigationTitle("Your Articles")
         }
         .task(id: "initial-load-saved-articles") {
             viewModel.fetchSavedArticles()

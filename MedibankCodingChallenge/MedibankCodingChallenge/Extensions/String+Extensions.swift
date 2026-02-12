@@ -7,6 +7,8 @@
 
 import SwiftUI
 
+// MARK: - Helper modifiers
+
 extension String {
     func highlight(_ words: [String],
                    font: Font = .default.bold(),

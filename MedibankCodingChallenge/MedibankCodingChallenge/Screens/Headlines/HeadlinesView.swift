@@ -52,7 +52,7 @@ struct HeadlinesView: View {
                     .buttonStyle(.glassProminent)
                 }
             )
-            .navigationTitle("Your News")
+            .navigationTitle("Latest News")
             .navigationSubtitle(viewModel.fetchInfo)
             .refreshable {
                 await viewModel.fetchArticles()
