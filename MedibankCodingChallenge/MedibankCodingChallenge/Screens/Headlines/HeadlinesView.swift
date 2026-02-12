@@ -17,7 +17,7 @@ struct HeadlinesView: View {
                 LazyVStack(spacing: Layout.Spacing.regular) {
                     NavigationLink(value: article) {
                         ArticleRow(article: article)
-                            .redacted(reason: viewModel.isLoading ? .placeholder : [])
+                            .asPlaceholder(reason: viewModel.isLoading)
                     }
                     .swipeActions {
                         Button {
@@ -28,11 +28,14 @@ struct HeadlinesView: View {
                         .tint(.yellow)
                     }
                 }
+                .padding(.top, Layout.Padding.comfortable)
             }
             .navigationDestination(for: Article.self) {
                 WebView(url: $0.url)
                     .webViewBackForwardNavigationGestures(.disabled)
             }
+            .navigationTitle("Latest News")
+            .navigationSubtitle(viewModel.fetchInfo)
             .emptyView(
                 if: viewModel.errorMessage != nil || viewModel.data.isEmpty,
                 label: Label("No Articles", systemImage: "newspaper"),
@@ -52,8 +55,6 @@ struct HeadlinesView: View {
                     .buttonStyle(.glassProminent)
                 }
             )
-            .navigationTitle("Latest News")
-            .navigationSubtitle(viewModel.fetchInfo)
             .refreshable {
                 await viewModel.fetchArticles()
             }

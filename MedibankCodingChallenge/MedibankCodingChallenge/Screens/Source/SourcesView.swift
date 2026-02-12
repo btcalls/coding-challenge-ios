@@ -6,9 +6,19 @@
 //
 
 import SwiftUI
+import Combine
 
+//struct SourcesView<VM: AppViewModel>: View where VM.Value == [Source] {
 struct SourcesView: View {
-    @StateObject private var viewModel = SourcesViewModel()
+    @ObservedObject private var viewModel: SourcesViewModel
+    
+    init(viewModel: SourcesViewModel) {
+        self.viewModel = viewModel
+    }
+    
+    private var count: Int {
+        return viewModel.data.filter { $0.isSelected }.count
+    }
     
     var body: some View {
         ScrollView {
@@ -21,16 +31,24 @@ struct SourcesView: View {
                         get: { source.isSelected },
                         set: { source.isSelected = $0 }
                     ))
-                    .redacted(reason: viewModel.isLoading ? .placeholder : [])
+                    .asPlaceholder(reason: viewModel.isLoading)
                 }
             }
+            .padding(.top, Layout.Padding.comfortable)
         }
-        .task(id: "initial-load-sources") {
-            await viewModel.fetchSources()
+        .safeAreaBar(edge: .bottom, spacing: Layout.Spacing.regular) {
+            if count > 0  {
+                Text("\(count) selected")
+                    .padding(.all, Layout.Padding.regular)
+                    .glassEffect(.regular, in: .capsule)
+                    .animation(.easeInOut, value: count)
+            }
         }
     }
 }
 
 #Preview {
-    SourcesView()
+    @Previewable @StateObject var viewModel = SourcesViewModel()
+    
+    SourcesView(viewModel: viewModel)
 }

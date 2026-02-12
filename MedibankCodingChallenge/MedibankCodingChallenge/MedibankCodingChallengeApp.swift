@@ -24,7 +24,7 @@ struct MedibankCodingChallengeApp: App {
                 }
                 
                 Tab(TabKey.sources.rawValue, systemImage: "network") {
-                    SourcesView()
+                    SourcesContainerView()
                 }
                 
                 Tab(TabKey.saved.rawValue, systemImage: "bookmark") {

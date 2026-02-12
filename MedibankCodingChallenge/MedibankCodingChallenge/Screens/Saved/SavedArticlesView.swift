@@ -24,7 +24,7 @@ struct SavedArticlesView: View {
                 LazyVStack(spacing: Layout.Spacing.regular) {
                     NavigationLink(value: article) {
                         ArticleRow(article: article)
-                            .redacted(reason: viewModel.isLoading ? .placeholder : [])
+                            .asPlaceholder(reason: viewModel.isLoading)
                     }
                     .swipeActions(allowsFullSwipe: true) {
                         Button(role: .destructive) {
@@ -34,11 +34,13 @@ struct SavedArticlesView: View {
                         }
                     }
                 }
+                .padding(.top, Layout.Padding.comfortable)
             }
             .navigationDestination(for: Article.self) {
                 WebView(url: $0.url)
                     .webViewBackForwardNavigationGestures(.disabled)
             }
+            .navigationTitle("Your Articles")
             .emptyView(
                 if: viewModel.errorMessage != nil || viewModel.data.isEmpty,
                 label: Label("No Saved Articles", systemImage: "bookmark.fill"),
@@ -49,7 +51,6 @@ struct SavedArticlesView: View {
                     }
                 },
             )
-            .navigationTitle("Your Articles")
         }
         .task(id: "initial-load-saved-articles") {
             viewModel.fetchSavedArticles()
