@@ -41,4 +41,11 @@ final class SavedArticlesViewModel: AppViewModel {
         
         data = articles ?? []
     }
+    
+    func delete(article: Article) {
+        self.manager.container?.mainContext.delete(article)
+        try? self.manager.container?.mainContext.save()
+        
+        fetchSavedArticles()
+    }
 }

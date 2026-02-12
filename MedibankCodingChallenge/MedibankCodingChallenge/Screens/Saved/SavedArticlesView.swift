@@ -21,10 +21,15 @@ struct SavedArticlesView: View {
         NavigationStack {
             List(viewModel.data) { article in
                 LazyVStack(spacing: Layout.Spacing.regular) {
-                    NavigationLink(value: article) {
-                        ArticleRow(article: article)
-                            .redacted(reason: viewModel.isLoading ? .placeholder : [])
-                    }
+                    ArticleRow(article: article)
+                        .redacted(reason: viewModel.isLoading ? .placeholder : [])
+                        .swipeActions(allowsFullSwipe: true) {
+                            Button(role: .destructive) {
+                                viewModel.delete(article: article)
+                            } label: {
+                                Label("Delete", systemImage: "trash")
+                            }
+                        }
                 }
             }
             .emptyView(
