@@ -76,8 +76,7 @@ struct HeadlinesListView: View {
                     }
                 }, label: {
                     Text("Get Articles")
-                        .fontWeight(.medium)
-                        .padding(.all, Layout.Padding.compact)
+                        .buttonTextStyle()
                 })
                 .buttonStyle(.glassProminent)
             }

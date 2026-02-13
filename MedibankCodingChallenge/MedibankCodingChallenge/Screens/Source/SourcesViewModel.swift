@@ -54,6 +54,9 @@ final class SourcesViewModel: AppViewModel {
         
         // Fetch from API if no Source records in storage
         do {
+            // To mock data fetching
+            data = MockValues.sources
+            errorMessage = nil
             isLoading = true
             
             // Configure constant query items for endpoint
@@ -63,13 +66,16 @@ final class SourcesViewModel: AppViewModel {
             let result = try await client.send(.getSources(queryItems))
             
             data = result.sources
-            errorMessage = nil
             
             // Persist sources
             try dataStore.saveRecords(data)
         } catch(let error as APIError) {
+            // Clear mock sources
+            data = []
             errorMessage = error.errorDescription
         } catch {
+            // Clear mock sources
+            data = []
             errorMessage = error.localizedDescription
         }
     }

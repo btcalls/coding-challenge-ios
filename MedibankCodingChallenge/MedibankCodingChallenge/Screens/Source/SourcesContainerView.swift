@@ -31,12 +31,14 @@ struct SourcesContainerView: View {
         ToolbarSpacer(placement: .confirmationAction)
         
         ToolbarItem(placement: .confirmationAction) {
-            Button(isEditing ? "Save" : "Select") {
-                if isEditing {
-                    try? viewModel.saveSelectedSources()
+            if !viewModel.isLoading {
+                Button(isEditing ? "Save" : "Select") {
+                    if isEditing {
+                        try? viewModel.saveSelectedSources()
+                    }
+                    
+                    isEditing.toggle()
                 }
-                
-                isEditing.toggle()
             }
         }
     }
@@ -44,13 +46,13 @@ struct SourcesContainerView: View {
     var body: some View {
         NavigationStack {
             SourcesView(viewModel, mode: isEditing ? .edit : .view)
-                .navigationTitle("Article Sources")
+                .navigationTitle("News Sources")
                 .toolbar {
                     toolbarContent
                 }
         }
         .padding(.horizontal, Layout.Padding.regular)
-        .task(id: "initial-load-sources-from-storage") {
+        .task(id: "fetch-sources") {
             await viewModel.fetchSources()
         }
     }

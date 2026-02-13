@@ -11,6 +11,7 @@ import SwiftUI
 enum Typography {
     static let boldHeadline: Font = .system(.headline, weight: .bold)
     static let mediumSubheadline: Font = .system(.subheadline, weight: .medium)
+    static let mediumTitle3: Font = .system(.title3, weight: .medium)
     static let lightBody: Font = .system(.body, weight: .light)
 }
 
@@ -41,5 +42,20 @@ extension View {
     /// - Returns: Modified view.
     func sourceStyle() -> some View {
         return self.font(Typography.mediumSubheadline)
+    }
+    
+    /// Modifier to apply standard stylings for custom button labels.
+    /// - Returns: Modified view.
+    func buttonTextStyle() -> some View {
+        return self
+            .fontWeight(.medium)
+            .padding(.all, Layout.Padding.compact)
+    }
+    
+    /// Modifier to apply text styles for a sub-header text..
+    /// - Returns: Modified view.
+    func subHeaderStyle() -> some View {
+        return self
+            .font(Typography.mediumTitle3)
     }
 }

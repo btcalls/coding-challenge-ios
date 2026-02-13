@@ -57,6 +57,10 @@ final class HeadlinesViewModel: AppViewModel {
         }
         
         let sources = dataStore.fetchSelected()
+        let maxNoOfArticles = 50
+        let articlePerSource = 10
+        // Page size to either 50 max. or 10 articles per source
+        let noOfArticles = articlePerSource * sources.count
         
         do {
             // To mock data fetching
@@ -68,7 +72,7 @@ final class HeadlinesViewModel: AppViewModel {
             // Configure query items
             var queryItems: [URLQueryItem] = [
                 .init(name: "language", value: "en"),
-                .init(name: "pageSize", value: "20")
+                .init(name: "pageSize", value: "\(min(noOfArticles, maxNoOfArticles))")
             ]
             
             if !query.isEmpty {
