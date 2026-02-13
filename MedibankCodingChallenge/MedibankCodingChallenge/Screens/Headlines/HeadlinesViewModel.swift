@@ -48,12 +48,13 @@ final class HeadlinesViewModel: AppViewModel {
             isLoading = false
         }
         
+        let sources = dataStore.fetchSelected()
+        
         do {
             isLoading = true
             fetchInfo = "Connecting..."
             
             // Configure query items
-            let sources = dataStore.fetchSelected()
             var queryItems: [URLQueryItem] = [
                 .init(name: "language", value: "en"),
                 .init(name: "pageSize", value: "20")
@@ -74,9 +75,12 @@ final class HeadlinesViewModel: AppViewModel {
         } catch {
             // Clear current articles since it may no longer coincide with user's sources selection
             data = []
-            // Settled for a generic error message for now.
             // Stored in fetchInfo directly since error messages are not handled by parent.
-            fetchInfo = "Failed fetching articles"
+            if sources.isEmpty {
+                fetchInfo = "No sources selected"
+            } else {
+                fetchInfo = "Failed fetching articles"
+            }
         }
     }
     

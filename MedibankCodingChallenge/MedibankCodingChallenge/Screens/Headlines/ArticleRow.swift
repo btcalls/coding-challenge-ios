@@ -10,10 +10,20 @@ import SwiftUI
 struct ArticleRow: View {
     let article: Article
     
+    @ViewBuilder private var authorText: some View {
+        if let author = article.author {
+            let string = "\(author) of \(article.source.name)".highlight(author)
+            
+            Text(string)
+        } else {
+            Text(article.source.name)
+        }
+    }
+    
     var body: some View {
         VStack(alignment: .leading) {
             HStack(alignment: .top, spacing: Layout.Spacing.regular) {
-                VStack(alignment: .leading) {
+                VStack(alignment: .leading, spacing: Layout.Spacing.md) {
                     Text(article.title)
                         .articleTitleStyle()
                         .multilineTextAlignment(.leading)
@@ -24,10 +34,8 @@ struct ArticleRow: View {
                             alignment: .topLeading
                         )
                     
-                    if let author = article.author {
-                        Text(author)
-                            .secondaryTextStyle()
-                    }
+                    authorText
+                        .secondaryTextStyle()
                 }
                 
                 CustomImage(

@@ -28,7 +28,6 @@ struct HeadlinesView: View {
                         .tint(.yellow)
                     }
                 }
-                .padding(.top, Layout.Padding.comfortable)
             }
             .navigationDestination(for: Article.self) {
                 WebView(url: $0.url)

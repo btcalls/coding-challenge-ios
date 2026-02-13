@@ -47,11 +47,12 @@ struct SourcesView<Actions>: View where Actions: View {
             },
             actions: { actions }
         )
-        .safeAreaBar(edge: .bottom, spacing: Layout.Spacing.regular) {
+        .safeAreaBar(edge: .bottom, spacing: Layout.Padding.comfortable) {
             if viewModel.selectedCount > 0  {
                 Text("\(viewModel.selectedCount) selected")
                     .padding(.all, Layout.Padding.regular)
                     .glassEffect(.regular, in: .capsule)
+                    .padding(.bottom, Layout.Padding.regular)
                     .animation(.easeInOut, value: viewModel.selectedCount)
             }
         }
