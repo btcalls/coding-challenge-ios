@@ -45,7 +45,7 @@ struct SavedArticlesView: View {
                 if: viewModel.errorMessage != nil || viewModel.data.isEmpty,
                 label: Label("No Saved Articles", systemImage: "bookmark.fill"),
                 description: {
-                    VStack {
+                    VStack(alignment: .center, spacing: Layout.Spacing.regular) {
                         Text("Saved articles will appear here.")
                         Text(emptyViewInfo)
                     }

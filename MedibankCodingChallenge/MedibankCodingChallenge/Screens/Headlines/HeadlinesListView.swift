@@ -63,7 +63,7 @@ struct HeadlinesListView: View {
             if: isResultEmpty,
             label: Label("No Articles", systemImage: "newspaper"),
             description: {
-                VStack {
+                VStack(alignment: .center, spacing: Layout.Spacing.regular) {
                     Text("Articles from selected sources will appear here.")
                     Text(emptyViewInfo)
                 }

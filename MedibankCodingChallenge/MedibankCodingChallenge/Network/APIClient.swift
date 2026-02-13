@@ -17,7 +17,7 @@ enum HTTPMethod: String, Sendable {
 enum APIError: Error, LocalizedError, Sendable {
     case invalidURL
     case invalidResponse
-    case serverError(statusCode: Int, data: Data)
+    case serverError(statusCode: Int, message: String?)
     case decodingFailed(underlying: Error)
     case unknown(underlying: Error)
 
@@ -29,8 +29,8 @@ enum APIError: Error, LocalizedError, Sendable {
         case .invalidResponse:
             return "The server returned an invalid response."
         
-        case .serverError(let status, _):
-            return "Server responded with status code \(status)."
+        case .serverError(let status, let message):
+            return message ?? "Server responded with status code \(status)."
         
         case .decodingFailed(let underlying):
             return "Failed to decode response: \(underlying.localizedDescription)"
@@ -41,7 +41,7 @@ enum APIError: Error, LocalizedError, Sendable {
     }
 }
 
-/// A simple, composable API client built on URLSession and Swift Concurrency.
+/// A simple, composable API client built on `URLSession` and Swift Concurrency.
 final class APIClient: @unchecked Sendable {
     typealias Headers = [String: String]
     
@@ -53,7 +53,7 @@ final class APIClient: @unchecked Sendable {
     /// Create an API client.
     /// - Parameters:
     ///   - baseURL: The base URL for all endpoints (e.g., https://api.example.com).
-    ///   - session: The URLSession to use. Defaults to `.shared`.
+    ///   - session: The `URLSession` to use. Defaults to `.shared`.
     ///   - decoder: JSON decoder for decoding responses.
     ///   - enableLogging: When true, prints basic request/response logs to the console.
     init(
@@ -84,6 +84,7 @@ final class APIClient: @unchecked Sendable {
         
         let (data, response) = try await session.data(for: request)
         
+        // Check for invalid HTTP response
         guard let http = response as? HTTPURLResponse else {
             throw APIError.invalidResponse
         }
@@ -92,8 +93,12 @@ final class APIClient: @unchecked Sendable {
             Logger.log(response: http, data: data)
         }
         
+        // Check for invalid HTTP status codes
         guard (200...299).contains(http.statusCode) else {
-            throw APIError.serverError(statusCode: http.statusCode, data: data)
+            throw APIError.serverError(
+                statusCode: http.statusCode,
+                message: try errorMessage(for: http.statusCode, with: data)
+            )
         }
         
         do {
@@ -104,6 +109,7 @@ final class APIClient: @unchecked Sendable {
     }
     
     func buildRequest<Response>(for endpoint: Endpoint<Response>) async throws -> URLRequest {
+        // Append default headers to request
         var defaultHeaders: Headers = [
             "content-type": "application/json; charset=utf-8",
             "Accept": "application/json"
@@ -113,7 +119,7 @@ final class APIClient: @unchecked Sendable {
             defaultHeaders["X-Api-Key"] = apiKey
         }
         
-        // Ensure we don't double-encode a leading slash in `path`.
+        // Ensure we do not double-encode a leading slash in `path`.
         let sanitizedPath = endpoint.path.hasPrefix("/") ? String(endpoint.path.dropFirst()) : endpoint.path
         var components = URLComponents(url: baseURL.appendingPathComponent(sanitizedPath),
                                        resolvingAgainstBaseURL: false)
@@ -127,6 +133,7 @@ final class APIClient: @unchecked Sendable {
             throw APIError.invalidURL
         }
 
+        // Create URL request
         var request = URLRequest(url: url)
         request.httpMethod = endpoint.method.rawValue
 
@@ -138,5 +145,26 @@ final class APIClient: @unchecked Sendable {
         }
         
         return request
+    }
+    
+    /// Generates a human-readable error message given the corresponding `statusCode`.
+    /// - Parameters:
+    ///   - statusCode: The HTTP response's status code.
+    ///   - data: The `Data` instance from `URLRequest`.
+    /// - Returns: The error message corresponding to the status code.
+    func errorMessage(for statusCode: Int, with data: Data) throws -> String {
+        let response = try decoder.decode(ErrorAPIResponse.self, from: data)
+        
+        // Handle common error status codes for API
+        switch(statusCode) {
+        case 400:
+            return "Scope of search is too broad."
+            
+        case 429:
+            return "Reached requests limit for Developer accounts."
+            
+        default:
+            return response.message
+        }
     }
 }

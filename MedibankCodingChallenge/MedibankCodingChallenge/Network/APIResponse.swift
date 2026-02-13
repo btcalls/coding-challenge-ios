@@ -27,3 +27,9 @@ struct SourcesAPIResponse: APIResponse {
     var totalResults: Int?
     var sources: [Value]
 }
+
+struct ErrorAPIResponse: Decodable {
+    var status: String
+    var code: String
+    var message: String
+}
