@@ -21,6 +21,7 @@ enum APIError: Error, LocalizedError, Sendable {
     case decodingFailed(underlying: Error)
     case unknown(underlying: Error)
 
+    /// A more human-readable error description.
     var errorDescription: String? {
         switch self {
         case .invalidURL:
@@ -108,6 +109,9 @@ final class APIClient: @unchecked Sendable {
         }
     }
     
+    /// Configures the `URLRequest` based on provided `Endpoint`.
+    /// - Parameter endpoint: Basis for the request's details such as `path`, etc.
+    /// - Returns: The `URLRequest` ready for use.
     func buildRequest<Response>(for endpoint: Endpoint<Response>) async throws -> URLRequest {
         // Append default headers to request
         var defaultHeaders: Headers = [

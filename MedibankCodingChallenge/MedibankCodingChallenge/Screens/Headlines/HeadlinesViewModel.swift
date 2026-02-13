@@ -15,8 +15,7 @@ final class HeadlinesViewModel: AppViewModel {
     
     @Published var isLoading: Bool = true
     @Published var errorMessage: String?
-    // Initial value as placeholder for loading state
-    @Published var data: [Article] = MockValues.articles
+    @Published var data: [Article] = MockValues.articles // Initial value as placeholder for loading state
     @Published var fetchInfo: String = ""
     
     private let client: APIClient
@@ -24,6 +23,7 @@ final class HeadlinesViewModel: AppViewModel {
     
     private var hasLoadedOnce = false
     
+    /// Checks whether there are selected `Source` instances in the data store.
     var hasSources: Bool {
         return !dataStore.fetchSelected().isEmpty
     }
@@ -37,6 +37,8 @@ final class HeadlinesViewModel: AppViewModel {
         self.dataStore = SourcesDataStore()
     }
     
+    /// Initiates fetching of new `[Article]` only on initial load.
+    /// - Parameter query: The query to provide to the API request.
     func fetchArticlesIfNeeded(withQuery query: String = "") async {
         guard !hasLoadedOnce else {
             return
@@ -47,6 +49,8 @@ final class HeadlinesViewModel: AppViewModel {
         await fetchArticles(withQuery: query)
     }
     
+    /// Initiates fetching of `[Article]`.
+    /// - Parameter query: The query to provide to the API request.
     func fetchArticles(withQuery query: String = "") async {
         defer {
             isLoading = false
@@ -93,10 +97,13 @@ final class HeadlinesViewModel: AppViewModel {
                 errorMessage = error.localizedDescription
             }
             
+            // Display error message as info message (e.g. navigationSubtitle)
             fetchInfo = errorMessage ?? ""
         }
     }
     
+    /// Saves an `Article` instance to the data store.
+    /// - Parameter article: The `Article` instance to save.
     func save(article: Article) {
         article.isSaved = true
         

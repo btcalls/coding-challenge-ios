@@ -7,6 +7,7 @@
 
 import SwiftData
 
+/// Protocol to be conformed for fetching records from SwiftData containers.
 protocol DataStore {
     associatedtype Value
     

@@ -21,6 +21,7 @@ final class SourcesViewModel: AppViewModel {
     private let client: APIClient
     private let dataStore: SourcesDataStore
     
+    /// Returns the number of currently selected `Source` instances from the data store.
     var selectedCount: Int {
         return data.count { $0.isSelected }
     }
@@ -34,6 +35,9 @@ final class SourcesViewModel: AppViewModel {
         self.dataStore = SourcesDataStore()
     }
     
+    /// Fetch `[Source]` first from an API call.
+    ///
+    /// On subsequent calls, if properly saved, data is now fetched at the corresponding data store.
     func fetchSources() async {
         defer {
             isLoading = false
@@ -70,6 +74,7 @@ final class SourcesViewModel: AppViewModel {
         }
     }
     
+    /// Clear current selection.
     func clearSelectedSources() {
         data = data.map {
             $0.isSelected = false
@@ -78,6 +83,7 @@ final class SourcesViewModel: AppViewModel {
         }
     }
     
+    /// Save all records, including changes to their `isSelected` values.
     func saveSelectedSources() throws {
         try dataStore.saveRecords(data)
     }

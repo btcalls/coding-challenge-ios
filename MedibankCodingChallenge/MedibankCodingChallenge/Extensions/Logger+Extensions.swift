@@ -12,6 +12,8 @@ extension Logger {
     private static let bundleLogger = Self(subsystem: Bundle.main.bundleIdentifier!,
                                            category: #file)
     
+    /// Logs `URLRequest` details such as headers and body.
+    /// - Parameter request: `URLRequest` to log.
     static func log(request: URLRequest) {
         var lines: [String] = []
         lines.append("➡️ \(request.httpMethod ?? ""). \(request.url?.absoluteString ?? "<nil>")")
@@ -27,6 +29,10 @@ extension Logger {
         bundleLogger.debug("\(lines.joined(separator: "\n"))")
     }
     
+    /// Logs `HTTPURLResponse` and `Data` details.
+    /// - Parameters:
+    ///   - response: `HTTPURLResponse` instance to log.
+    ///   - data: `Data` instance to log.
     static func log(response: HTTPURLResponse, data: Data) {
         var lines: [String] = []
         lines.append("⬅️ Status: \(response.statusCode) from \(response.url?.absoluteString ?? "<nil>")")
@@ -38,7 +44,14 @@ extension Logger {
         bundleLogger.trace("\(lines.joined(separator: "\n"))")
     }
     
+    /// Logs the description of `Error` instances.
+    /// - Parameter error: `Error` instance to log.
     static func log(_ error: Error) {
-        bundleLogger.error("\(error.localizedDescription)")
+        if let e = error as? APIError {
+            bundleLogger
+                .error("\(e.errorDescription ?? e.localizedDescription)")
+        } else {
+            bundleLogger.error("\(error.localizedDescription)")
+        }
     }
 }

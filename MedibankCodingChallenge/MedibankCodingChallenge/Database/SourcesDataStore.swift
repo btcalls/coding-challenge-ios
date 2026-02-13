@@ -8,6 +8,7 @@
 import SwiftData
 import Foundation
 
+/// SwiftData data store for the `Source` model.
 final class SourcesDataStore: DataStore {
     typealias Value = Source
     
@@ -25,9 +26,7 @@ final class SourcesDataStore: DataStore {
         let fetchDescriptor = FetchDescriptor<Source>(
             sortBy: [SortDescriptor(\.name, order: .forward)]
         )
-        let sources = try? container.mainContext.fetch(
-            fetchDescriptor
-        )
+        let sources = try? container.mainContext.fetch(fetchDescriptor)
         
         return sources ?? []
     }
@@ -57,9 +56,7 @@ final class SourcesDataStore: DataStore {
             predicate: #Predicate { $0.isSelected },
             sortBy: [SortDescriptor(\.name, order: .forward)]
         )
-        let sources = try? container.mainContext.fetch(
-            fetchDescriptor
-        )
+        let sources = try? container.mainContext.fetch(fetchDescriptor)
         
         return sources ?? []
     }

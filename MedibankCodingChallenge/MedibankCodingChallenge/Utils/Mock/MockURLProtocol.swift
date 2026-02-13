@@ -7,6 +7,7 @@
 
 import Foundation
 
+/// Mock class for simulating URL requests.
 final class MockURLProtocol: URLProtocol {
     static var responseProvider: ((URLRequest) throws -> (URLResponse, Data))?
     

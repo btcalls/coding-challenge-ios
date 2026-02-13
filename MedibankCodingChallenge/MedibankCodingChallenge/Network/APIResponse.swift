@@ -1,5 +1,5 @@
 //
-//  Responses.swift
+//  APIResponse.swift
 //  MedibankCodingChallenge
 //
 //  Created by Jason Jon Carreos on 10/2/2026.
@@ -12,6 +12,7 @@ protocol APIResponse: Codable {
     var totalResults: Int? { get }
 }
 
+/// API response object for fetching `Article` instances.
 struct ArticlesAPIResponse: APIResponse {
     typealias Value = Article
     
@@ -20,6 +21,7 @@ struct ArticlesAPIResponse: APIResponse {
     var articles: [Value]
 }
 
+/// API response object for fetching `Source` instances.
 struct SourcesAPIResponse: APIResponse {
     typealias Value = Source
     
@@ -28,6 +30,7 @@ struct SourcesAPIResponse: APIResponse {
     var sources: [Value]
 }
 
+/// API response object generated when request results in an error..
 struct ErrorAPIResponse: Decodable {
     var status: String
     var code: String

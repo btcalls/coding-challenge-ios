@@ -8,6 +8,7 @@
 import SwiftUI
 import Combine
 
+/// List view used for the `HeadlinesView`.
 struct HeadlinesListView: View {
     @ObservedObject var viewModel: HeadlinesViewModel
     @StateObject var searchContext: SearchContext
@@ -86,8 +87,8 @@ struct HeadlinesListView: View {
             query: searchContext.debouncedQuery
         )
         .onChange(of: isSearching) { oldValue, newValue in
-            // Dismissed the search bar
             if oldValue && !newValue {
+                // Search bar has been dismissed
                 Task(name: "fetch-articles-after-dismiss-search") {
                     await viewModel.fetchArticles()
                 }

@@ -7,6 +7,7 @@
 
 import SwiftUI
 
+/// View to display `Article` instances.
 struct ArticleRow: View {
     let article: Article
     

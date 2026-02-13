@@ -8,6 +8,7 @@
 import SwiftUI
 import WebKit
 
+/// Main view used for the `Headlines` tab.
 struct HeadlinesView: View {
     @StateObject private var viewModel = HeadlinesViewModel()
     @StateObject private var searchContext = SearchContext()

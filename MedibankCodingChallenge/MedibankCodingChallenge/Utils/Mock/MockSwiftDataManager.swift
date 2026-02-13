@@ -7,6 +7,9 @@
 
 import SwiftData
 
+/// Mock class for `SwiftDataManager`
+///
+/// Used for testing and unit tests.
 final class MockSwiftDataManager {
     var container: ModelContainer?
     var context: ModelContext?

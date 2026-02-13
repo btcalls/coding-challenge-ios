@@ -1,5 +1,5 @@
 //
-//  Source.swift
+//  ArticleSource.swift
 //  MedibankCodingChallenge
 //
 //  Created by Jason Jon Carreos on 9/2/2026.
