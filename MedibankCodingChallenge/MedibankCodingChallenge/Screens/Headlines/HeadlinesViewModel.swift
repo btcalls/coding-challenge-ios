@@ -24,6 +24,10 @@ final class HeadlinesViewModel: AppViewModel {
     
     private var hasLoadedOnce = false
     
+    var hasSources: Bool {
+        return !dataStore.fetchSelected().isEmpty
+    }
+    
     init() {
         guard let base = Bundle.main.apiURL else {
             fatalError("Cannot initialise APIClient: Missing base URL configuration in .xcconfig")

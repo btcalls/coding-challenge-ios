@@ -14,6 +14,13 @@ struct HeadlinesListView: View {
     
     @Environment(\.isSearching) private var isSearching
     
+    private var emptyViewInfo: AttributedString {
+        let word = TabKey.sources.rawValue
+        let string = "Head to the \(word) tab to select article sources."
+        
+        return string.highlight(word)
+    }
+    
     /// Flag whether data fetched from API is empty.
     private var isResultEmpty: Bool {
         if viewModel.isLoading {
@@ -56,7 +63,10 @@ struct HeadlinesListView: View {
             if: isResultEmpty,
             label: Label("No Articles", systemImage: "newspaper"),
             description: {
-                Text("Articles from selected sources will appear here.")
+                VStack {
+                    Text("Articles from selected sources will appear here.")
+                    Text(emptyViewInfo)
+                }
             },
             actions: {
                 Button(action: {

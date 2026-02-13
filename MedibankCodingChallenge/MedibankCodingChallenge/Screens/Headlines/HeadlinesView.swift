@@ -25,6 +25,7 @@ struct HeadlinesView: View {
                     await viewModel.fetchArticles()
                 }
                 .searchable(
+                    if: viewModel.hasSources,
                     text: $searchContext.query,
                     placement: .navigationBarDrawer(displayMode: .always)
                 )
