@@ -8,6 +8,7 @@
 import SwiftUI
 import WebKit
 
+/// Main view used for the `Saved` tab.
 struct SavedArticlesView: View {
     @StateObject private var viewModel = SavedArticlesViewModel()
     

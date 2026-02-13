@@ -15,8 +15,7 @@ final class SavedArticlesViewModel: AppViewModel {
     
     @Published var isLoading: Bool = true
     @Published var errorMessage: String?
-    // Provided initial value as placeholder for loading state
-    @Published var data: [Article] = MockValues.articles
+    @Published var data: [Article] = MockValues.articles // Provided initial value as placeholder for loading state
     
     private let manager: SwiftDataManager
     
@@ -24,6 +23,7 @@ final class SavedArticlesViewModel: AppViewModel {
         self.manager = SwiftDataManager.shared
     }
     
+    /// Fetch saved `Article` instances from the data store.
     func fetchSavedArticles() {
         defer {
             isLoading = false
@@ -31,6 +31,7 @@ final class SavedArticlesViewModel: AppViewModel {
         
         isLoading = true
         
+        // Configure filter, and sort descriptors
         let fetchDescriptor = FetchDescriptor<Article>(
             predicate: #Predicate { $0.isSaved },
             sortBy: [SortDescriptor(\.publishedAt, order: .reverse)]
@@ -42,6 +43,10 @@ final class SavedArticlesViewModel: AppViewModel {
         data = articles ?? []
     }
     
+    /// Deletes an `Article` instance from the data store.
+    ///
+    /// Initiates a reload of saved records to be reflected on the view.
+    /// - Parameter article: The `Article` instance to be removed.
     func delete(article: Article) {
         self.manager.container?.mainContext.delete(article)
         try? self.manager.container?.mainContext.save()

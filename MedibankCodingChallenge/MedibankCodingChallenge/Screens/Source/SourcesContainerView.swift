@@ -7,6 +7,7 @@
 
 import SwiftUI
 
+/// Main view used for the `Sources` tab.
 struct SourcesContainerView: View {
     @State private var isEditing: Bool = false
     @StateObject private var viewModel = SourcesViewModel()

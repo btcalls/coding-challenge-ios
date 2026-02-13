@@ -7,6 +7,7 @@
 
 import Foundation
 
+/// Protocol to be conformed by view model instances.
 protocol AppViewModel: ObservableObject {
     associatedtype Value
     

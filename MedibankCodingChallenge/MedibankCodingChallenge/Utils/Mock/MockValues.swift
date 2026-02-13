@@ -7,7 +7,9 @@
 
 import Foundation
 
-struct MockValues {
+/// Namespace for mock values used globally.
+enum MockValues {
+    
     // MARK: - Models
     
     private static let url = URL(string: "http://test.com")!
@@ -102,6 +104,11 @@ struct MockValues {
         sources: Self.sources
     )
     
+    /// Simulate calling of `.getArticles` endpoint.
+    /// - Parameters:
+    ///   - query: The query to filter mock data.
+    ///   - seconds: The delay of execution.
+    /// - Returns: The mocked response.
     static func fetchArticles(
         with query: String,
         delay seconds: Double = 1
@@ -118,6 +125,10 @@ struct MockValues {
         return response
     }
     
+    
+    /// Simulate calling of `.getSources` endpoint.
+    /// - Parameter seconds: The delay of execution.
+    /// - Returns: The mocked response.
     static func fetchSources(delay seconds: Double = 1) async throws -> SourcesAPIResponse {
         try await Task.sleep(for: .seconds(seconds))
         

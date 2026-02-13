@@ -8,6 +8,7 @@
 import Foundation
 
 /// A lightweight description of an API endpoint.
+///
 /// Provide the expected `Response` type at the call-site.
 struct Endpoint<Response>: Sendable {
     var path: String
@@ -29,12 +30,18 @@ struct Endpoint<Response>: Sendable {
 }
 
 extension Endpoint {
+    /// `Endpoint` instance configured to fetch `ArticlesAPIResponse`.
+    /// - Parameter queryItems: The query items to be appended to the request's URL.
+    /// - Returns: Configured `Endpoint` instance.
     static func getArticles(
         _ queryItems: [URLQueryItem]
     ) -> Endpoint<ArticlesAPIResponse> {
         return .init(path: "everything", queryItems: queryItems)
     }
     
+    /// `Endpoint` instance configured to fetch `SourcesAPIResponse`.
+    /// - Parameter queryItems: The query items to be appended to the request's URL.
+    /// - Returns: Configured `Endpoint` instance.
     static func getSources(
         _ queryItems: [URLQueryItem]
     ) -> Endpoint<SourcesAPIResponse>{

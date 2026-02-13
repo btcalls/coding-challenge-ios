@@ -7,6 +7,7 @@
 
 import SwiftData
 
+/// Manager for configuring SwiftData persistent storage.
 final class SwiftDataManager {
     static let shared = SwiftDataManager()
     

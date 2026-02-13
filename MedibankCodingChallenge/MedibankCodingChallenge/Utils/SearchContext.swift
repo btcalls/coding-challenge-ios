@@ -8,7 +8,7 @@
 import Foundation
 import Combine
 
-/// Observable object to delay query string input.
+/// Observable object used to delay query string input.
 ///
 /// Used for cases like appending search strings for API endpoint requets.
 final class SearchContext: ObservableObject {

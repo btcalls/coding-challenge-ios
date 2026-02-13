@@ -42,10 +42,15 @@ private final class ImageLoader: ObservableObject {
     @Published var state: State = .idle
     
     private var task: Task<Void, Never>?
-
+    
+    /// Initiates loading of `URL` to retrieve image data.
+    /// - Parameters:
+    ///   - url: A valid `URL` for an image.
+    ///   - thumbnailMaxDimension: The maximum size of the thumbnail to be used for downscaling.
     func load(from url: URL?, thumbnailMaxDimension: CGFloat?) {
         task?.cancel()
         
+        // Check if url is valid
         guard let url else {
             state = .idle
             
@@ -64,6 +69,7 @@ private final class ImageLoader: ObservableObject {
             }
 
             do {
+                // Initiate request
                 let (data, response) = try await URLSession.shared.data(from: url)
                 
                 guard Task.isCancelled == false else {
@@ -94,7 +100,7 @@ private final class ImageLoader: ObservableObject {
                     image = image.downscaled(maxDimension: maxDim)
                 }
 
-                // Stor to cache and update UI state
+                // Store to cache and update UI state
                 await ImageCache.shared.insert(image, for: url)
                 await MainActor.run {
                     self?.state = .success(image)
@@ -109,6 +115,7 @@ private final class ImageLoader: ObservableObject {
         }
     }
 
+    /// Cancels request.
     func cancel() {
         task?.cancel()
     }
@@ -133,8 +140,9 @@ private extension UIImage {
         let scale = maxDimension / maxSide
         let newSize = CGSize(width: size.width * scale, height: size.height * scale)
 
-        let format = UIGraphicsImageRendererFormat.default()
+        var format = UIGraphicsImageRendererFormat.default()
         format.scale = self.scale
+        
         let renderer = UIGraphicsImageRenderer(size: newSize, format: format)
         
         return renderer.image { _ in
@@ -143,6 +151,9 @@ private extension UIImage {
     }
 }
 
+/// View to load thumbnails from URL.
+///
+/// Option to cache images afterwards.
 struct CustomImage: View {
     @Environment(\.redactionReasons) private var redactionReasons
     

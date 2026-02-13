@@ -8,17 +8,17 @@
 import SwiftUI
 import Combine
 
+/// Child view used to fetch and display `[Source]` instances.
 struct SourcesView<Actions>: View where Actions: View {
     enum Mode {
         case view
         case edit
     }
     
-    @ObservedObject private var viewModel: SourcesViewModel
-    
-    
     var mode: Mode = .edit
     @ViewBuilder var actions: Actions
+    
+    @ObservedObject private var viewModel: SourcesViewModel
     
     var body: some View {
         ScrollView {

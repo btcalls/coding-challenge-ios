@@ -7,11 +7,13 @@
 
 import SwiftUI
 
+/// Cases for configuring type of empty view to overlay.
 enum EmptyViewType {
     case generic
     case search(String?)
 }
 
+/// Modifier to configure an empty view based on provided parameters.
 struct EmptyViewModifier<Label, Description, Actions>: ViewModifier where Label : View, Description : View, Actions : View {
     var condition: Bool
     var type: EmptyViewType
