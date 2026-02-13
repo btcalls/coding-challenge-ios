@@ -32,7 +32,7 @@ struct SourcesContainerView: View {
         ToolbarItem(placement: .confirmationAction) {
             Button(isEditing ? "Save" : "Select") {
                 if isEditing {
-                    viewModel.saveSelectedSources()
+                    try? viewModel.saveSelectedSources()
                 }
                 
                 isEditing.toggle()
@@ -42,15 +42,13 @@ struct SourcesContainerView: View {
     
     var body: some View {
         NavigationStack {
-            SourcesView(viewModel: viewModel)
-                .disabled(!isEditing)
+            SourcesView(viewModel: viewModel, mode: isEditing ? .edit : .view)
                 .navigationTitle("Article Sources")
-                .padding(.top, Layout.Padding.comfortable)
-                .padding(.horizontal, Layout.Padding.regular)
                 .toolbar {
                     toolbarContent
                 }
         }
+        .padding(.horizontal, Layout.Padding.regular)
         .task(id: "initial-load-sources-from-storage") {
             await viewModel.fetchSources()
         }

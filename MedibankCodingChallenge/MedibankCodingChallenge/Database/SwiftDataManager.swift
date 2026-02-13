@@ -11,7 +11,6 @@ final class SwiftDataManager {
     static let shared = SwiftDataManager()
     
     var container: ModelContainer?
-    var context: ModelContext?
     
     private init() {
         do {
@@ -27,10 +26,6 @@ final class SwiftDataManager {
                 for: schema,
                 configurations: [modelConfiguration]
             )
-            
-            if let container {
-                context = ModelContext(container)
-            }
         } catch {
             fatalError("Error initializing database container: \(error)")
         }
