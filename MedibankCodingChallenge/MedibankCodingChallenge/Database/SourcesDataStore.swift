@@ -8,8 +8,10 @@
 import SwiftData
 import Foundation
 
-final class SourcesDataStore {
-    private let container: ModelContainer
+final class SourcesDataStore: DataStore {
+    typealias Value = Source
+    
+    var container: ModelContainer
     
     init() {
         guard let container = SwiftDataManager.shared.container else {
@@ -30,6 +32,26 @@ final class SourcesDataStore {
         return sources ?? []
     }
     
+    func save(record: Source) throws {
+        try saveRecords([record])
+    }
+    
+    func saveRecords(_ records: [Source]) throws {
+        try container.mainContext.transaction {
+            for obj in records {
+                container.mainContext.insert(obj)
+            }
+            
+            try container.mainContext.save()
+        }
+    }
+    
+    func delete(_ record: Source) throws {
+        container.mainContext.delete(record)
+    }
+    
+    // MARK: - Helper methods
+    
     func fetchSelected() -> [Source] {
         let fetchDescriptor = FetchDescriptor<Source>(
             predicate: #Predicate { $0.isSelected },
@@ -40,18 +62,5 @@ final class SourcesDataStore {
         )
         
         return sources ?? []
-    }
-    
-    func save(_ source: Source) throws {
-        try save([source])
-    }
-    
-    func save(_ sources: [Source]) throws {
-        try container.mainContext.transaction {
-            for obj in sources {
-                container.mainContext.insert(obj)
-                try container.mainContext.save()
-            }
-        }
     }
 }

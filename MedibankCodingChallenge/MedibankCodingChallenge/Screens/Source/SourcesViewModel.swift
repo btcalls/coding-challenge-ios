@@ -18,6 +18,7 @@ final class SourcesViewModel: AppViewModel {
     @Published var data: [Source] = MockValues.sources // Initial value as placeholder for loading state
     
     private let client: APIClient
+    private let dataStore: SourcesDataStore
     
     init() {
         guard let base = Bundle.main.apiURL else {
@@ -25,6 +26,7 @@ final class SourcesViewModel: AppViewModel {
         }
         
         self.client = APIClient(baseURL: base, enableLogging: true)
+        self.dataStore = SourcesDataStore()
     }
     
     func fetchSources() async {
@@ -32,6 +34,16 @@ final class SourcesViewModel: AppViewModel {
             isLoading = false
         }
         
+        // Check first if local storage is already populated
+        let sources = dataStore.fetchAll()
+        
+        guard sources.isEmpty else {
+            data = sources
+            
+            return
+        }
+        
+        // Fetch from API if no Source records in storage
         do {
             isLoading = true
             
@@ -42,6 +54,9 @@ final class SourcesViewModel: AppViewModel {
             
             data = result.sources
             errorMessage = nil
+            
+            // Persist sources
+            try dataStore.saveRecords(data)
         } catch(let error as APIError) {
             errorMessage = error.errorDescription
         } catch {
@@ -57,7 +72,7 @@ final class SourcesViewModel: AppViewModel {
         }
     }
     
-    func saveSelectedSources() {
-        // TODO: 
+    func saveSelectedSources() throws {
+        try dataStore.saveRecords(data)
     }
 }
