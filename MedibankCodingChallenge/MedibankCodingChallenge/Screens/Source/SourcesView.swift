@@ -70,7 +70,7 @@ extension SourcesView {
     init(_ viewModel: SourcesViewModel,
          mode: Mode = .edit,
          additionalInfo: String? = nil,
-         @ViewBuilder actions: () -> Actions = EmptyView.init) {
+         @ViewBuilder emptyViewActions actions: () -> Actions = EmptyView.init) {
         self.viewModel = viewModel
         self.mode = mode
         self.additionalInfo = additionalInfo

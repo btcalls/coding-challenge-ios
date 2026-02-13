@@ -18,7 +18,22 @@ struct OnboardingView: View {
     
     var body: some View {
         NavigationStack {
-            SourcesView(viewModel, mode: .edit, additionalInfo: additionalInfo)
+            SourcesView(
+                viewModel,
+                mode: .edit,
+                additionalInfo: additionalInfo,
+                emptyViewActions: {
+                    Button(action: {
+                        Task {
+                            await viewModel.fetchSources()
+                        }
+                    }, label: {
+                        Text("Get Sources")
+                            .buttonTextStyle()
+                    })
+                    .buttonStyle(.glassProminent)
+                }
+            )
                 .navigationTitle("Welcome!")
                 .safeAreaBar(edge: .bottom) {
                     if !viewModel.data.isEmpty {

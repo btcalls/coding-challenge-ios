@@ -139,8 +139,7 @@ private extension UIImage {
         
         let scale = maxDimension / maxSide
         let newSize = CGSize(width: size.width * scale, height: size.height * scale)
-
-        var format = UIGraphicsImageRendererFormat.default()
+        let format = UIGraphicsImageRendererFormat.default()
         format.scale = self.scale
         
         let renderer = UIGraphicsImageRenderer(size: newSize, format: format)

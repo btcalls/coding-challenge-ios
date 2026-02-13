@@ -40,7 +40,7 @@ struct SourceButton: View {
     @Previewable @State var isEnabled = false
     
     Toggle(isOn: $isEnabled) {
-        Text("Test")
+        Text("Enable Button")
     }
     
     SourceButton(title: source.name, isSelected: Binding<Bool>(
