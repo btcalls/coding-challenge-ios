@@ -15,10 +15,13 @@ final class HeadlinesViewModel: AppViewModel {
     
     @Published var isLoading: Bool = true
     @Published var errorMessage: String?
-    @Published var data: [Article] = MockValues.articles // Initial value as placeholder for loading state
+    // Initial value as placeholder for loading state
+    @Published var data: [Article] = MockValues.articles
     @Published var fetchInfo: String = ""
     
     private let client: APIClient
+    private let dataStore: SourcesDataStore
+    
     private var hasLoadedOnce = false
     
     init() {
@@ -27,6 +30,7 @@ final class HeadlinesViewModel: AppViewModel {
         }
         
         self.client = APIClient(baseURL: base, enableLogging: true)
+        self.dataStore = SourcesDataStore()
     }
     
     func fetchArticlesIfNeeded() async {
@@ -42,33 +46,37 @@ final class HeadlinesViewModel: AppViewModel {
     func fetchArticles() async {
         defer {
             isLoading = false
-            
-            if let _ = errorMessage {
-                fetchInfo = "Failed fetching articles."
-            } else {
-                fetchInfo = "Updated last \(Date().formatted(date: .abbreviated, time: .shortened))"
-            }
         }
         
         do {
             isLoading = true
             fetchInfo = "Connecting..."
             
-            // TODO: As property
-            let queryItems: [URLQueryItem] = [
-                .init(name: "q", value: "Swift"),
+            // Configure query items
+            let sources = dataStore.fetchSelected()
+            var queryItems: [URLQueryItem] = [
                 .init(name: "language", value: "en"),
                 .init(name: "pageSize", value: "20")
             ]
             
+            if !sources.isEmpty {
+                let value = sources.map(\.id).joined(separator: ",")
+                
+                queryItems.append(.init(name: "sources", value: value))
+            }
+            
+            // Fetch from API
             let result = try await client.send(.getArticles(queryItems))
             
             data = result.articles
             errorMessage = nil
-        } catch(let error as APIError) {
-            errorMessage = error.errorDescription
+            fetchInfo = "Updated last \(Date().formatted(date: .abbreviated, time: .shortened))"
         } catch {
-            errorMessage = error.localizedDescription
+            // Clear current articles since it may no longer coincide with user's sources selection
+            data = []
+            // Settled for a generic error message for now.
+            // Stored in fetchInfo directly since error messages are not handled by parent.
+            fetchInfo = "Failed fetching articles"
         }
     }
     
