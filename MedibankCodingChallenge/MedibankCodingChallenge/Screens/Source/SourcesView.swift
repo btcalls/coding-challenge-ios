@@ -10,14 +10,18 @@ import Combine
 
 //struct SourcesView<VM: AppViewModel>: View where VM.Value == [Source] {
 struct SourcesView: View {
-    @ObservedObject private var viewModel: SourcesViewModel
-    
-    init(viewModel: SourcesViewModel) {
-        self.viewModel = viewModel
+    enum Mode {
+        case view
+        case edit
     }
     
-    private var count: Int {
-        return viewModel.data.filter { $0.isSelected }.count
+    @ObservedObject private var viewModel: SourcesViewModel
+    
+    var mode: Mode
+    
+    init(viewModel: SourcesViewModel, mode: Mode = .edit) {
+        self.viewModel = viewModel
+        self.mode = mode
     }
     
     var body: some View {
@@ -32,16 +36,17 @@ struct SourcesView: View {
                         set: { source.isSelected = $0 }
                     ))
                     .asPlaceholder(reason: viewModel.isLoading)
+                    .disabled(mode == .view)
                 }
             }
             .padding(.top, Layout.Padding.comfortable)
         }
         .safeAreaBar(edge: .bottom, spacing: Layout.Spacing.regular) {
-            if count > 0  {
-                Text("\(count) selected")
+            if viewModel.selectedCount > 0  {
+                Text("\(viewModel.selectedCount) selected")
                     .padding(.all, Layout.Padding.regular)
                     .glassEffect(.regular, in: .capsule)
-                    .animation(.easeInOut, value: count)
+                    .animation(.easeInOut, value: viewModel.selectedCount)
             }
         }
     }
@@ -50,5 +55,5 @@ struct SourcesView: View {
 #Preview {
     @Previewable @StateObject var viewModel = SourcesViewModel()
     
-    SourcesView(viewModel: viewModel)
+    SourcesView(viewModel: viewModel, mode: .view)
 }

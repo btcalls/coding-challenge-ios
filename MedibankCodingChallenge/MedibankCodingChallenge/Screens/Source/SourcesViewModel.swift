@@ -15,10 +15,15 @@ final class SourcesViewModel: AppViewModel {
     
     @Published var isLoading: Bool = true
     @Published var errorMessage: String?
-    @Published var data: [Source] = MockValues.sources // Initial value as placeholder for loading state
+    // Initial value as placeholder for loading state
+    @Published var data: [Source] = MockValues.sources
     
     private let client: APIClient
     private let dataStore: SourcesDataStore
+    
+    var selectedCount: Int {
+        return data.count { $0.isSelected }
+    }
     
     init() {
         guard let base = Bundle.main.apiURL else {

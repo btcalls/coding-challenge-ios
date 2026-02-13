@@ -13,7 +13,7 @@ struct SavedArticlesView: View {
     
     private var info: AttributedString {
         let word = TabKey.headlines.rawValue
-        let string = "Head to the \(word) tab to search for articles."
+        let string = "Head to the \(word) tab to browse for articles."
         
         return string.highlight(word)
     }
