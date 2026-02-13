@@ -18,7 +18,8 @@ struct ToggleButtonStyle: ButtonStyle {
             .multilineTextAlignment(.leading)
             .lineLimit(nil)
             .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .leading)
-            .padding(.all, Layout.Padding.comfortable)
+            .padding(.vertical, Layout.Padding.comfortable)
+            .padding(.horizontal, Layout.Padding.regular)
             .opacity(configuration.isPressed ? 0.5 : 1)
             .foregroundStyle(.primary)
             .background(

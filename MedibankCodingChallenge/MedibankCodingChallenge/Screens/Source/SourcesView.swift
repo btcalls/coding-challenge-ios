@@ -16,12 +16,19 @@ struct SourcesView<Actions>: View where Actions: View {
     }
     
     var mode: Mode = .edit
+    var additionalInfo: String? = nil
     @ViewBuilder var actions: Actions
     
     @ObservedObject private var viewModel: SourcesViewModel
     
     var body: some View {
         ScrollView {
+            if let additionalInfo {
+                Text(additionalInfo)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .subHeaderStyle()
+            }
+            
             LazyVGrid(columns: [
                 GridItem(.flexible()),
                 GridItem(.flexible())
@@ -62,9 +69,11 @@ struct SourcesView<Actions>: View where Actions: View {
 extension SourcesView {
     init(_ viewModel: SourcesViewModel,
          mode: Mode = .edit,
+         additionalInfo: String? = nil,
          @ViewBuilder actions: () -> Actions = EmptyView.init) {
         self.viewModel = viewModel
         self.mode = mode
+        self.additionalInfo = additionalInfo
         self.actions = actions()
     }
 }
@@ -72,5 +81,5 @@ extension SourcesView {
 #Preview {
     @Previewable @StateObject var viewModel = SourcesViewModel()
     
-    SourcesView(viewModel, mode: .view)
+    SourcesView(viewModel, mode: .view, additionalInfo: "Hey!!")
 }
