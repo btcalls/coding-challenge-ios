@@ -32,7 +32,7 @@ struct SourcesContainerView: View {
         ToolbarItem(placement: .confirmationAction) {
             Button(isEditing ? "Save" : "Select") {
                 if isEditing {
-                    viewModel.saveSelectedSources()
+                    try? viewModel.saveSelectedSources()
                 }
                 
                 isEditing.toggle()
