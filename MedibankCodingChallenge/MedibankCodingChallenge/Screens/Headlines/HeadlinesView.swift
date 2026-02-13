@@ -19,16 +19,16 @@ struct HeadlinesView: View {
                     WebView(url: $0.url)
                         .webViewBackForwardNavigationGestures(.disabled)
                 }
-                .navigationTitle("Latest News")
-                .navigationSubtitle(viewModel.fetchInfo)
+                .navigationTitle("All Articles")
+                .navigationSubtitle(Text(viewModel.fetchInfo))
                 .refreshable {
                     await viewModel.fetchArticles()
                 }
                 .searchable(
-                    if: viewModel.hasSources,
                     text: $searchContext.query,
-                    placement: .navigationBarDrawer(displayMode: .always)
+                    placement: .navigationBarDrawer(displayMode: .automatic)
                 )
+                .scrollDisabled(viewModel.data.isEmpty)
                 .autocorrectionDisabled()
                 .onChange(of: searchContext.debouncedQuery) { oldValue, newValue in
                     guard oldValue != newValue else {

@@ -16,16 +16,16 @@ Develop a proof-of-concept news reader app using **SwiftUI**. The app will fetch
 Your app should include a TabView with three tabs:
 
 #### 1. **Headlines Tab**
-- [ ] Displays a list of articles based on selected sources
+- [x] Displays a list of articles based on selected sources
 - [x] Each row should include: **title, description, author, and thumbnail image**
 - [x] Tapping a row should open the article in a **WebView** within the app
 - [x] Users should be able to **save articles** from this view
-- [ ] Handle empty states gracefully (e.g., no sources selected, no results)
+- [x] Handle empty states gracefully (e.g., no sources selected, no results)
 
 #### 2. **Sources Tab**
 - [x] Displays a list of available article sources (English only)
 - [x] Allow users to select multiple sources
-- [ ] Selection should **persist across app launches**
+- [x] Selection should **persist across app launches**
 
 #### 3. **Saved Tab**
 - [x] Displays a list of articles previously saved by the user

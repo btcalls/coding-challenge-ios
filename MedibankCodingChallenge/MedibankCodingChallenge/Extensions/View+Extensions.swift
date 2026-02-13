@@ -53,19 +53,5 @@ extension View {
                                           description: { EmptyView() },
                                           actions: { EmptyView()}))
     }
-    
-    @ViewBuilder
-    func searchable(
-        if condition: Bool,
-        text: Binding<String>,
-        placement: SearchFieldPlacement = .automatic,
-        prompt: String = "Search"
-    ) -> some View {
-        if condition {
-            self.searchable(text: text, placement: placement, prompt: prompt)
-        } else {
-            self
-        }
-    }
 }
 

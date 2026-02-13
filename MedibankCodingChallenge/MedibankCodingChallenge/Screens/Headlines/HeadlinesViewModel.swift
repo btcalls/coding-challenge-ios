@@ -55,7 +55,9 @@ final class HeadlinesViewModel: AppViewModel {
         let sources = dataStore.fetchSelected()
         
         do {
+            // To mock data fetching
             data = MockValues.articles
+            
             isLoading = true
             fetchInfo = "Connecting..."
             
