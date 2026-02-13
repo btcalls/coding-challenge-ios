@@ -30,6 +30,21 @@ extension View {
                                           actions: actions))
     }
     
+    func emptySearchView(if condition: Bool, query: String? = nil) -> some View {
+        return modifier(EmptyViewModifier(for: .search(query),
+                                          if: condition,
+                                          label: EmptyView(),
+                                          description: { EmptyView() },
+                                          actions: { EmptyView()}))
+//        if condition {
+//            return AnyView(self.overlay {
+//                ContentUnavailableView.search(text: query)
+//            })
+//        } else {
+//            return AnyView(self)
+//        }
+    }
+    
     /// Modifies view to be presented as a placeholder, disabling intended interactions in the process.
     ///
     /// Typically used for skeleton views.
@@ -41,3 +56,4 @@ extension View {
             .disabled(reason)
     }
 }
+

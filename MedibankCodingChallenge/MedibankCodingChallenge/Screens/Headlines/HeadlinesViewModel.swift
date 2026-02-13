@@ -51,6 +51,7 @@ final class HeadlinesViewModel: AppViewModel {
         let sources = dataStore.fetchSelected()
         
         do {
+            data = MockValues.articles
             isLoading = true
             fetchInfo = "Connecting..."
             
@@ -79,6 +80,8 @@ final class HeadlinesViewModel: AppViewModel {
         } catch {
             // Clear current articles since it may no longer coincide with user's sources selection
             data = []
+            errorMessage = error.localizedDescription
+            
             // Stored in fetchInfo directly since error messages are not handled by parent.
             if sources.isEmpty {
                 fetchInfo = "No sources selected"
