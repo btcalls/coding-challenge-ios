@@ -53,7 +53,7 @@ struct SavedArticlesView: View {
                 },
             )
         }
-        .task(id: "initial-load-saved-articles") {
+        .task(id: "initial-fetch-saved-articles") {
             viewModel.fetchSavedArticles()
         }
     }

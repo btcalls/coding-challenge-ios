@@ -52,7 +52,7 @@ struct SourcesContainerView: View {
                 }
         }
         .padding(.horizontal, Layout.Padding.regular)
-        .task(id: "initial-load-sources-from-storage") {
+        .task(id: "fetch-sources") {
             await viewModel.fetchSources()
         }
     }

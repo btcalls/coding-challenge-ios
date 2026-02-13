@@ -42,4 +42,12 @@ extension View {
     func sourceStyle() -> some View {
         return self.font(Typography.mediumSubheadline)
     }
+    
+    /// Modifier to apply standard stylings for custom button labels.
+    /// - Returns: Modified view.
+    func buttonTextStyle() -> some View {
+        return self
+            .fontWeight(.medium)
+            .padding(.all, Layout.Padding.compact)
+    }
 }
