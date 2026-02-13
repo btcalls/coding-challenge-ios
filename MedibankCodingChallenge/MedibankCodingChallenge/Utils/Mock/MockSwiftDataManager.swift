@@ -12,7 +12,6 @@ import SwiftData
 /// Used for testing and unit tests.
 final class MockSwiftDataManager {
     var container: ModelContainer?
-    var context: ModelContext?
     
     init() {
         do {
@@ -21,15 +20,12 @@ final class MockSwiftDataManager {
                 Article.self,
                 Source.self
             ])
-            let configuration = ModelConfiguration(schema: schema, isStoredInMemoryOnly: true)
+            let configuration = ModelConfiguration(schema: schema,
+                                                   isStoredInMemoryOnly: true)
             container = try ModelContainer(
                 for: schema,
                 configurations: configuration
             )
-            
-            if let container {
-                context = ModelContext(container)
-            }
         } catch {
             fatalError("Error initializing database container: \(error)")
         }

@@ -10,7 +10,9 @@ import WebKit
 
 /// Main view used for the `Headlines` tab.
 struct HeadlinesView: View {
-    @StateObject private var viewModel = HeadlinesViewModel()
+    @StateObject private var viewModel = HeadlinesViewModel(
+        container: SwiftDataManager.shared.container
+    )
     @StateObject private var searchContext = SearchContext()
     
     var body: some View {

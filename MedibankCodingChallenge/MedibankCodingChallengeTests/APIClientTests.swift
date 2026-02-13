@@ -62,7 +62,7 @@ final class APIClientTests: XCTestCase {
             _ = try await client.send(endpoint)
             
             XCTFail("Expected error to be thrown")
-        } catch let APIError.serverError(statusCode, data) {
+        } catch let APIError.serverError(statusCode, data, _) {
             XCTAssertEqual(statusCode, 400)
             XCTAssertEqual(data, errorBody)
         } catch {

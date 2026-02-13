@@ -10,7 +10,9 @@ import SwiftUI
 /// View to be presented initially to configure sources to be used for fetching articles.
 struct OnboardingView: View {
     @EnvironmentObject private var appSettings: AppSettings
-    @StateObject private var viewModel = SourcesViewModel()
+    @StateObject private var viewModel = SourcesViewModel(
+        container: SwiftDataManager.shared.container
+    )
     
     var additionalInfo: String {
         return "To get stared, please select the news sources you would like to fetch articles from."

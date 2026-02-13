@@ -19,22 +19,32 @@ final class HeadlinesViewModel: AppViewModel {
     @Published var fetchInfo: String = ""
     
     private let client: APIClient
-    private let dataStore: SourcesDataStore
+    private let articlesDataStore: ArticlesDataStore
+    private let sourcesDataStore: SourcesDataStore
     
+    /// Sets the view model to be used for mock testing.
+    private var asMock = false
+    /// Flag set once any `fetch()` call has succeeded at least once.
     private var hasLoadedOnce = false
     
     /// Checks whether there are selected `Source` instances in the data store.
     var hasSources: Bool {
-        return !dataStore.fetchSelected().isEmpty
+        return !sourcesDataStore.fetchSelected().isEmpty
     }
     
-    init() {
+    init(container: ModelContainer?, asMock: Bool = false) {
         guard let base = Bundle.main.apiURL else {
             fatalError("Cannot initialise APIClient: Missing base URL configuration in .xcconfig")
         }
         
+        guard let container else {
+            fatalError("Cannot initialise: ModelContainer not provided.")
+        }
+        
         self.client = APIClient(baseURL: base, enableLogging: true)
-        self.dataStore = SourcesDataStore()
+        self.articlesDataStore = ArticlesDataStore(container: container)
+        self.sourcesDataStore = SourcesDataStore(container: container)
+        self.asMock = asMock
     }
     
     /// Initiates fetching of new `[Article]` only on initial load.
@@ -56,7 +66,7 @@ final class HeadlinesViewModel: AppViewModel {
             isLoading = false
         }
         
-        let sources = dataStore.fetchSelected()
+        let sources = sourcesDataStore.fetchSelected()
         let maxNoOfArticles = 50
         let articlePerSource = 10
         // Page size to either 50 max. or 10 articles per source
@@ -85,8 +95,15 @@ final class HeadlinesViewModel: AppViewModel {
                 queryItems.append(.init(name: "sources", value: value))
             }
             
-            // Fetch from API
-            let result = try await client.send(.getArticles(queryItems))
+            // TODO: Better way of mocking API calls
+            // Fetch from API or mock data
+            var result: ArticlesAPIResponse
+            
+            if asMock {
+                result = try await MockValues.fetchArticles(with: query)
+            } else {
+                result = try await client.send(.getArticles(queryItems))
+            }
             
             data = result.articles
             errorMessage = nil
@@ -108,10 +125,9 @@ final class HeadlinesViewModel: AppViewModel {
     
     /// Saves an `Article` instance to the data store.
     /// - Parameter article: The `Article` instance to save.
-    func save(article: Article) {
+    func save(article: Article) throws {
         article.isSaved = true
         
-        SwiftDataManager.shared.container?.mainContext.insert(article)
-        try? SwiftDataManager.shared.container?.mainContext.save()
+        try articlesDataStore.save(record: article)
     }
 }

@@ -10,7 +10,9 @@ import WebKit
 
 /// Main view used for the `Saved` tab.
 struct SavedArticlesView: View {
-    @StateObject private var viewModel = SavedArticlesViewModel()
+    @StateObject private var viewModel = SavedArticlesViewModel(
+        container: SwiftDataManager.shared.container
+    )
     
     private var emptyViewInfo: AttributedString {
         let word = TabKey.headlines.rawValue
@@ -35,7 +37,6 @@ struct SavedArticlesView: View {
                         }
                     }
                 }
-                .padding(.top, Layout.Padding.comfortable)
             }
             .navigationDestination(for: Article.self) {
                 WebView(url: $0.url)

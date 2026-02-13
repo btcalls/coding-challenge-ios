@@ -79,7 +79,9 @@ extension SourcesView {
 }
 
 #Preview {
-    @Previewable @StateObject var viewModel = SourcesViewModel()
+    @Previewable @StateObject var viewModel = SourcesViewModel(
+        container: MockSwiftDataManager().container
+    )
     
     SourcesView(viewModel, mode: .view, additionalInfo: "Hey!!")
 }

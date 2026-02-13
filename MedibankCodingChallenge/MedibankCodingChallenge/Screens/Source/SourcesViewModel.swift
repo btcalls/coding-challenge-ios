@@ -26,13 +26,17 @@ final class SourcesViewModel: AppViewModel {
         return data.count { $0.isSelected }
     }
     
-    init() {
+    init(container: ModelContainer?) {
         guard let base = Bundle.main.apiURL else {
             fatalError("Cannot initialise APIClient: Missing base URL configuration in .xcconfig")
         }
         
+        guard let container else {
+            fatalError("Cannot initialise: ModelContainer not provided.")
+        }
+        
         self.client = APIClient(baseURL: base, enableLogging: true)
-        self.dataStore = SourcesDataStore()
+        self.dataStore = SourcesDataStore(container: container)
     }
     
     /// Fetch `[Source]` first from an API call.

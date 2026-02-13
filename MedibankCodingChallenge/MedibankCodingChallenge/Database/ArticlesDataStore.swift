@@ -1,5 +1,5 @@
 //
-//  SourcesDataStore.swift
+//  ArticlesDataStore.swift
 //  MedibankCodingChallenge
 //
 //  Created by Jason Jon Carreos on 13/2/2026.
@@ -8,9 +8,9 @@
 import SwiftData
 import Foundation
 
-/// SwiftData data store for the `Source` model.
-final class SourcesDataStore: DataStore {
-    typealias Value = Source
+/// SwiftData data store for the `Article` model.
+final class ArticlesDataStore: DataStore {
+    typealias Value = Article
     
     var container: ModelContainer
     
@@ -22,20 +22,20 @@ final class SourcesDataStore: DataStore {
         self.container = modelContainer
     }
     
-    func fetchAll() -> [Source] {
-        let fetchDescriptor = FetchDescriptor<Source>(
-            sortBy: [SortDescriptor(\.name, order: .forward)]
+    func fetchAll() -> [Article] {
+        let fetchDescriptor = FetchDescriptor<Article>(
+            sortBy: [SortDescriptor(\.publishedAt, order: .reverse)]
         )
         let sources = try? container.mainContext.fetch(fetchDescriptor)
         
         return sources ?? []
     }
     
-    func save(record: Source) throws {
+    func save(record: Article) throws {
         try saveRecords([record])
     }
     
-    func saveRecords(_ records: [Source]) throws {
+    func saveRecords(_ records: [Article]) throws {
         try container.mainContext.transaction {
             for obj in records {
                 container.mainContext.insert(obj)
@@ -45,19 +45,19 @@ final class SourcesDataStore: DataStore {
         }
     }
     
-    func delete(_ record: Source) throws {
+    func delete(_ record: Article) throws {
         container.mainContext.delete(record)
     }
     
     // MARK: - Helper methods
     
-    func fetchSelected() -> [Source] {
-        let fetchDescriptor = FetchDescriptor<Source>(
-            predicate: #Predicate { $0.isSelected },
-            sortBy: [SortDescriptor(\.name, order: .forward)]
+    func fetchSaved() -> [Article] {
+        let fetchDescriptor = FetchDescriptor<Article>(
+            predicate: #Predicate { $0.isSaved },
+            sortBy: [SortDescriptor(\.publishedAt, order: .reverse)]
         )
-        let sources = try? container.mainContext.fetch(fetchDescriptor)
+        let articles = try? container.mainContext.fetch(fetchDescriptor)
         
-        return sources ?? []
+        return articles ?? []
     }
 }
