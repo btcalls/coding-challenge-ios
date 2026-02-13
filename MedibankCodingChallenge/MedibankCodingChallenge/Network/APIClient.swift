@@ -17,7 +17,7 @@ enum HTTPMethod: String, Sendable {
 enum APIError: Error, LocalizedError, Sendable {
     case invalidURL
     case invalidResponse
-    case serverError(statusCode: Int, message: String?)
+    case serverError(statusCode: Int, data: Data, message: String?)
     case decodingFailed(underlying: Error)
     case unknown(underlying: Error)
 
@@ -30,7 +30,7 @@ enum APIError: Error, LocalizedError, Sendable {
         case .invalidResponse:
             return "The server returned an invalid response."
         
-        case .serverError(let status, let message):
+        case .serverError(let status, _, let message):
             return message ?? "Server responded with status code \(status)."
         
         case .decodingFailed(let underlying):
@@ -98,6 +98,7 @@ final class APIClient: @unchecked Sendable {
         guard (200...299).contains(http.statusCode) else {
             throw APIError.serverError(
                 statusCode: http.statusCode,
+                data: data,
                 message: try errorMessage(for: http.statusCode, with: data)
             )
         }

@@ -52,7 +52,7 @@ struct HeadlinesListView: View {
                 }
                 .swipeActions {
                     Button {
-                        viewModel.save(article: article)
+                        try? viewModel.save(article: article)
                     } label: {
                         Label("Save", systemImage: "bookmark")
                     }

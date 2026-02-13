@@ -17,10 +17,14 @@ final class SavedArticlesViewModel: AppViewModel {
     @Published var errorMessage: String?
     @Published var data: [Article] = MockValues.articles // Provided initial value as placeholder for loading state
     
-    private let manager: SwiftDataManager
+    private let dataStore: ArticlesDataStore
     
-    init() {
-        self.manager = SwiftDataManager.shared
+    init(container: ModelContainer?) {
+        guard let container else {
+            fatalError("Cannot initialise: ModelContainer not provided.")
+        }
+        
+        self.dataStore = ArticlesDataStore(container: container)
     }
     
     /// Fetch saved `Article` instances from the data store.
@@ -31,16 +35,8 @@ final class SavedArticlesViewModel: AppViewModel {
         
         isLoading = true
         
-        // Configure filter, and sort descriptors
-        let fetchDescriptor = FetchDescriptor<Article>(
-            predicate: #Predicate { $0.isSaved },
-            sortBy: [SortDescriptor(\.publishedAt, order: .reverse)]
-        )
-        let articles = try? manager.container?.mainContext.fetch(
-            fetchDescriptor
-        )
-        
-        data = articles ?? []
+        // Configure filter, and sort descriptors        
+        data = dataStore.fetchSaved()
     }
     
     /// Deletes an `Article` instance from the data store.
@@ -48,9 +44,7 @@ final class SavedArticlesViewModel: AppViewModel {
     /// Initiates a reload of saved records to be reflected on the view.
     /// - Parameter article: The `Article` instance to be removed.
     func delete(article: Article) {
-        self.manager.container?.mainContext.delete(article)
-        try? self.manager.container?.mainContext.save()
-        
+        try? dataStore.delete(article)
         fetchSavedArticles()
     }
 }
