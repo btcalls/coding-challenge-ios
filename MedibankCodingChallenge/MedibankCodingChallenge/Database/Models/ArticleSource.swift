@@ -15,16 +15,15 @@ final class ArticleSource: Codable {
     var id: String?
     var name: String
     @Relationship(deleteRule: .cascade, inverse: \Article.source)
-    var articles: [Article]
+    var articles: [Article]?
     
-    init(id: String? = nil, name: String, articles: [Article] = []) {
+    init(id: String? = nil, name: String) {
         self.id = id
         self.name = name
-        self.articles = articles
     }
     
     private enum CodingKeys: String, CodingKey {
-        case id, name, articles
+        case id, name
     }
     
     required init(from decoder: any Decoder) throws {
@@ -32,7 +31,6 @@ final class ArticleSource: Codable {
         
         id = try container.decodeIfPresent(String.self, forKey: .id)
         name = try container.decode(String.self, forKey: .name)
-        articles = []
     }
     
     func encode(to encoder: any Encoder) throws {

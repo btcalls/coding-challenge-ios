@@ -12,8 +12,6 @@ enum MockValues {
     
     // MARK: - Models
     
-    private static let url = URL(string: "http://test.com")!
-    
     static let articleSource = ArticleSource(name: "Gizmodo.com")
     static let article = Article(
         source: Self.articleSource,
@@ -26,24 +24,24 @@ enum MockValues {
     )
     static let articles: [Article] = [
         .init(
-            source: Self.articleSource,
+            source: ArticleSource(name: "SourceOne.com"),
             title: .placeholder(length: 38),
             articleDescription: .placeholder(length: 56),
-            url: url,
+            url: URL(string: "http://www.sourceone.com")!,
             publishedAt: Date()
         ),
         .init(
-            source: Self.articleSource,
+            source: ArticleSource(name: "SourceTwo.com"),
             title: .placeholder(length: 42),
             articleDescription: .placeholder(length: 56),
-            url: url,
+            url: URL(string: "http://www.sourcetwo.com")!,
             publishedAt: Date()
         ),
         .init(
-            source: Self.articleSource,
+            source: ArticleSource(name: "SourceThree.com"),
             title: .placeholder(length: 49),
             articleDescription: .placeholder(length: 56),
-            url: url,
+            url: URL(string: "http://www.sourcethree.com")!,
             publishedAt: Date()
         )
     ]
@@ -57,31 +55,31 @@ enum MockValues {
         .init(
             id: "1",
             name: .placeholder(length: 10),
-            url: url,
+            url: URL(string: "http://www.sampleone.com")!,
             category: "general"
         ),
         .init(
             id: "2",
             name: .placeholder(length: 10),
-            url: url,
+            url: URL(string: "http://www.sampletwo.com")!,
             category: "general"
         ),
         .init(
             id: "3",
             name: .placeholder(length: 10),
-            url: url,
+            url: URL(string: "http://www.samplethree.com")!,
             category: "general"
         ),
         .init(
             id: "4",
             name: .placeholder(length: 10),
-            url: url,
+            url: URL(string: "http://www.samplefour.com")!,
             category: "general"
         ),
         .init(
             id: "5",
             name: .placeholder(length: 10),
-            url: url,
+            url: URL(string: "http://www.samplefive.com")!,
             category: "general"
         )
     ]
@@ -96,12 +94,12 @@ enum MockValues {
     static let articlesResponse = ArticlesAPIResponse(
         status: "ok",
         totalResults: 1,
-        articles: [Self.article]
+        articles: articles
     )
     static let sourcesResponse = SourcesAPIResponse(
         status: "ok",
         totalResults: 1,
-        sources: Self.sources
+        sources: sources
     )
     
     /// Simulate calling of `.getArticles` endpoint.
@@ -116,7 +114,7 @@ enum MockValues {
         var response = articlesResponse
         
         if !query.isEmpty {
-            response.articles = MockValues.articles
+            response.articles = response.articles
                 .filter { $0.title.contains(query) }
         }
         
@@ -124,7 +122,6 @@ enum MockValues {
         
         return response
     }
-    
     
     /// Simulate calling of `.getSources` endpoint.
     /// - Parameter seconds: The delay of execution.

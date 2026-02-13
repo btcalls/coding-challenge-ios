@@ -10,7 +10,7 @@ import SwiftData
 @testable import MedibankCodingChallenge
 
 final class DatabaseTests: XCTestCase {
-    private let sampleSource = Source(id: "the-irish-times", name: "The Irish Times")
+    private let sampleSource = MockValues.source
     private var swiftDataManager: MockSwiftDataManager!
     
     @MainActor
@@ -62,7 +62,7 @@ final class DatabaseTests: XCTestCase {
         
         // Insert single record
         let article = Article(
-            source: sampleSource,
+            source: MockValues.articleSource,
             author: "Author One",
             title: "The Sample Article",
             articleDescription: "This is a sample article.",
