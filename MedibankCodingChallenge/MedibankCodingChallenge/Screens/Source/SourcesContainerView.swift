@@ -31,12 +31,14 @@ struct SourcesContainerView: View {
         ToolbarSpacer(placement: .confirmationAction)
         
         ToolbarItem(placement: .confirmationAction) {
-            Button(isEditing ? "Save" : "Select") {
-                if isEditing {
-                    try? viewModel.saveSelectedSources()
+            if !viewModel.isLoading {
+                Button(isEditing ? "Save" : "Select") {
+                    if isEditing {
+                        try? viewModel.saveSelectedSources()
+                    }
+                    
+                    isEditing.toggle()
                 }
-                
-                isEditing.toggle()
             }
         }
     }

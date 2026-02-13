@@ -11,16 +11,17 @@ struct SourceButton: View {
     var title: String
     @Binding var isSelected: Bool
     
+    @Environment(\.isEnabled) private var isEnabled
+    
     @ViewBuilder
     private var label: some View {
         HStack(alignment: .center, spacing: Layout.Spacing.md) {
             Image(systemName: isSelected ? "checkmark.circle.fill" : "circle")
+                .opacity(isEnabled ? 1 : 0)
+                .animation(.spring, value: isEnabled)
+                         
             Text(title)
-                .multilineTextAlignment(.leading)
-                .lineLimit(nil)
-                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .leading)
         }
-        .padding(.all, Layout.Padding.comfortable)
         .fontWeight(isSelected ? .medium : .regular)
     }
     
@@ -30,21 +31,23 @@ struct SourceButton: View {
         }, label: {
             label
         })
-        .background(isSelected ? Color.accentColor : Color(.secondarySystemBackground))
-        .tint(.primary)
-        .clipShape(
-            .rect(cornerRadius: Layout.CornerRadius.regular, style: .continuous)
-        )
+        .buttonStyle(ToggleButtonStyle(isSelected: isSelected))
     }
 }
 
 #Preview {
     @Previewable @State var source = MockValues.source
+    @Previewable @State var isEnabled = false
+    
+    Toggle(isOn: $isEnabled) {
+        Text("Test")
+    }
     
     SourceButton(title: source.name, isSelected: Binding<Bool>(
         get: { source.isSelected },
         set: { source.isSelected = $0 }
     ))
     .frame(width: 250, height: 80)
+    .disabled(!isEnabled)
 }
 
