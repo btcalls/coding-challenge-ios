@@ -4,13 +4,20 @@ Welcome to the Medibank iOS coding challenge! This is your opportunity to demons
 
 ---
 
-## 🎯 Challenge Overview
-You are not expected to build a production-level app. Instead, we’re looking at how you structure your code, prioritise tasks, and communicate trade-offs.
-Develop a proof-of-concept news reader app using **SwiftUI**. The app will fetch and display trending articles from NewsAPI, allow users to filter by sources, and support saving articles for later reading.
+## ⚠️ Project Configuration
+
+It is important to setup the following in order for the app to run correctly. For sensitive values (API URLs, access tokens, etc.):
+
+- In the `/Configs` folder, rename `Config_Template.xcconfig` to `Config.xcconfig` as it is already provided with the keys and is linked to `Info.plist`.
+- Supply needed values to specified variables.
+- In **_Project Settings -> Configurations_**, make sure that `Config.xcconfig` is properly set for both `Debug` and `Release`.
 
 ---
 
 ## 🧱 Functional Requirements
+![App Preview](./MedibankiOSCodeChallenge.gif)
+
+Within the given timeframe, I managed to cover the following functional requirements:
 
 ### Main Navigation (Tab View)
 Your app should include a TabView with three tabs:
