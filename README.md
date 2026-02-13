@@ -16,38 +16,38 @@ Develop a proof-of-concept news reader app using **SwiftUI**. The app will fetch
 Your app should include a TabView with three tabs:
 
 #### 1. **Headlines Tab**
-- Displays a list of articles based on selected sources
-- Each row should include: **title, description, author, and thumbnail image**
-- Tapping a row should open the article in a **WebView** within the app
-- Users should be able to **save articles** from this view
-- Handle empty states gracefully (e.g., no sources selected, no results)
+- [x] Displays a list of articles based on selected sources
+- [x] Each row should include: **title, description, author, and thumbnail image**
+- [x] Tapping a row should open the article in a **WebView** within the app
+- [x] Users should be able to **save articles** from this view
+- [x] Handle empty states gracefully (e.g., no sources selected, no results)
 
 #### 2. **Sources Tab**
-- Displays a list of available article sources (English only)
-- Allow users to select multiple sources
-- Selection should **persist across app launches**
+- [x] Displays a list of available article sources (English only)
+- [x] Allow users to select multiple sources
+- [x] Selection should **persist across app launches**
 
 #### 3. **Saved Tab**
-- Displays a list of articles previously saved by the user
-- Tapping a saved article should open it in a WebView
-- Users should be able to **delete saved articles**
-- Saved articles must **persist across app launches**
+- [x] Displays a list of articles previously saved by the user
+- [x] Tapping a saved article should open it in a WebView
+- [x] Users should be able to **delete saved articles**
+- [x] Saved articles must **persist across app launches**
 
 ### Networking
-- Use NewsAPI to fetch headlines and sources (https://newsapi.org/)
-- Register for a free API key 
-- API will return the latest 10 articles per source — pagination not required
-- Use **URLSession** or a custom networking layer
-- Do **not** use any 3rd-party NewsAPI clients
+- [x] Use NewsAPI to fetch headlines and sources (https://newsapi.org/)
+- [x] Register for a free API key 
+- [x] API will return the latest 10 articles per source — pagination not required
+- [x] Use **URLSession** or a custom networking layer
+- [x] Do **not** use any 3rd-party NewsAPI clients
 
 ### Architecture
-- Follow **MVVM** architecture
-- Uses SwiftUI property wrappers appropriately to manage state, observable data, and shared dependencies, ensuring correct ownership and predictable UI updates.
-- Structure your code to promote **modularity and reusability**, where applicable
+- [x] Follow **MVVM** architecture
+- [x] Uses SwiftUI property wrappers appropriately to manage state, observable data, and shared dependencies, ensuring correct ownership and predictable UI updates.
+- [x] Structure your code to promote **modularity and reusability**, where applicable
 
 ### Persistence
-- Use any local persistence method (e.g., `UserDefaults`, local file, CoreData)
-- Clearly separate persistence logic for readability
+- [x] Use any local persistence method (e.g., `UserDefaults`, local file, CoreData)
+- [x] Clearly separate persistence logic for readability
 
 ---
 

@@ -96,4 +96,31 @@ struct MockValues {
         totalResults: 1,
         articles: [Self.article]
     )
+    static let sourcesResponse = SourcesAPIResponse(
+        status: "ok",
+        totalResults: 1,
+        sources: Self.sources
+    )
+    
+    static func fetchArticles(
+        with query: String,
+        delay seconds: Double = 1
+    ) async throws -> ArticlesAPIResponse {
+        var response = articlesResponse
+        
+        if !query.isEmpty {
+            response.articles = MockValues.articles
+                .filter { $0.title.contains(query) }
+        }
+        
+        try await Task.sleep(for: .seconds(seconds))
+        
+        return response
+    }
+    
+    static func fetchSources(delay seconds: Double = 1) async throws -> SourcesAPIResponse {
+        try await Task.sleep(for: .seconds(seconds))
+        
+        return sourcesResponse
+    }
 }

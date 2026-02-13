@@ -10,56 +10,37 @@ import WebKit
 
 struct HeadlinesView: View {
     @StateObject private var viewModel = HeadlinesViewModel()
+    @StateObject private var searchContext = SearchContext()
     
     var body: some View {
         NavigationStack {
-            List(viewModel.data, id: \.url) { article in
-                LazyVStack(spacing: Layout.Spacing.regular) {
-                    NavigationLink(value: article) {
-                        ArticleRow(article: article)
-                            .asPlaceholder(reason: viewModel.isLoading)
+            HeadlinesListView(viewModel: viewModel, searchContext: searchContext)
+                .navigationDestination(for: Article.self) {
+                    WebView(url: $0.url)
+                        .webViewBackForwardNavigationGestures(.disabled)
+                }
+                .navigationTitle("All Articles")
+                .navigationSubtitle(Text(viewModel.fetchInfo))
+                .refreshable {
+                    await viewModel.fetchArticles()
+                }
+                .searchable(
+                    text: $searchContext.query,
+                    placement: .navigationBarDrawer(displayMode: .automatic)
+                )
+                .scrollDisabled(viewModel.data.isEmpty)
+                .autocorrectionDisabled()
+                .onChange(of: searchContext.debouncedQuery) { oldValue, newValue in
+                    guard oldValue != newValue else {
+                        return
                     }
-                    .swipeActions {
-                        Button {
-                            viewModel.save(article: article)
-                        } label: {
-                            Label("Save", systemImage: "bookmark")
-                        }
-                        .tint(.yellow)
+                    
+                    Task(name: "fetch-articles-with-query") {
+                        await viewModel.fetchArticles(withQuery: newValue)
                     }
                 }
-                .padding(.top, Layout.Padding.comfortable)
-            }
-            .navigationDestination(for: Article.self) {
-                WebView(url: $0.url)
-                    .webViewBackForwardNavigationGestures(.disabled)
-            }
-            .navigationTitle("Latest News")
-            .navigationSubtitle(viewModel.fetchInfo)
-            .emptyView(
-                if: viewModel.errorMessage != nil || viewModel.data.isEmpty,
-                label: Label("No Articles", systemImage: "newspaper"),
-                description: {
-                    Text("Articles from selected sources will appear here.")
-                },
-                actions: {
-                    Button(action: {
-                        Task {
-                            await viewModel.fetchArticles()
-                        }
-                    }, label: {
-                        Text("Get Articles")
-                            .fontWeight(.medium)
-                            .padding(.all, Layout.Padding.compact)
-                    })
-                    .buttonStyle(.glassProminent)
-                }
-            )
-            .refreshable {
-                await viewModel.fetchArticles()
-            }
         }
-        .task(id: "initial-load-articles") {
+        .task(id: "initial-fetch-articles") {
             await viewModel.fetchArticlesIfNeeded()
         }
     }

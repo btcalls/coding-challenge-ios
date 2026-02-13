@@ -24,6 +24,10 @@ final class HeadlinesViewModel: AppViewModel {
     
     private var hasLoadedOnce = false
     
+    var hasSources: Bool {
+        return !dataStore.fetchSelected().isEmpty
+    }
+    
     init() {
         guard let base = Bundle.main.apiURL else {
             fatalError("Cannot initialise APIClient: Missing base URL configuration in .xcconfig")
@@ -33,31 +37,39 @@ final class HeadlinesViewModel: AppViewModel {
         self.dataStore = SourcesDataStore()
     }
     
-    func fetchArticlesIfNeeded() async {
+    func fetchArticlesIfNeeded(withQuery query: String = "") async {
         guard !hasLoadedOnce else {
             return
         }
         
         hasLoadedOnce = true
         
-        await fetchArticles()
+        await fetchArticles(withQuery: query)
     }
     
-    func fetchArticles() async {
+    func fetchArticles(withQuery query: String = "") async {
         defer {
             isLoading = false
         }
         
+        let sources = dataStore.fetchSelected()
+        
         do {
+            // To mock data fetching
+            data = MockValues.articles
+            
             isLoading = true
             fetchInfo = "Connecting..."
             
             // Configure query items
-            let sources = dataStore.fetchSelected()
             var queryItems: [URLQueryItem] = [
                 .init(name: "language", value: "en"),
                 .init(name: "pageSize", value: "20")
             ]
+            
+            if !query.isEmpty {
+                queryItems.append(.init(name: "q", value: query))
+            }
             
             if !sources.isEmpty {
                 let value = sources.map(\.id).joined(separator: ",")
@@ -74,9 +86,14 @@ final class HeadlinesViewModel: AppViewModel {
         } catch {
             // Clear current articles since it may no longer coincide with user's sources selection
             data = []
-            // Settled for a generic error message for now.
-            // Stored in fetchInfo directly since error messages are not handled by parent.
-            fetchInfo = "Failed fetching articles"
+            
+            if let e = error as? APIError {
+                errorMessage = e.errorDescription
+            } else {
+                errorMessage = error.localizedDescription
+            }
+            
+            fetchInfo = errorMessage ?? ""
         }
     }
     

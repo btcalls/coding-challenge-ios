@@ -11,7 +11,7 @@ import WebKit
 struct SavedArticlesView: View {
     @StateObject private var viewModel = SavedArticlesViewModel()
     
-    private var info: AttributedString {
+    private var emptyViewInfo: AttributedString {
         let word = TabKey.headlines.rawValue
         let string = "Head to the \(word) tab to browse for articles."
         
@@ -45,9 +45,9 @@ struct SavedArticlesView: View {
                 if: viewModel.errorMessage != nil || viewModel.data.isEmpty,
                 label: Label("No Saved Articles", systemImage: "bookmark.fill"),
                 description: {
-                    VStack {
+                    VStack(alignment: .center, spacing: Layout.Spacing.regular) {
                         Text("Saved articles will appear here.")
-                        Text(info)
+                        Text(emptyViewInfo)
                     }
                 },
             )

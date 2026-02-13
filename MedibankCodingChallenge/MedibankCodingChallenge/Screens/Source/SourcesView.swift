@@ -8,8 +8,7 @@
 import SwiftUI
 import Combine
 
-//struct SourcesView<VM: AppViewModel>: View where VM.Value == [Source] {
-struct SourcesView: View {
+struct SourcesView<Actions>: View where Actions: View {
     enum Mode {
         case view
         case edit
@@ -17,12 +16,9 @@ struct SourcesView: View {
     
     @ObservedObject private var viewModel: SourcesViewModel
     
-    var mode: Mode
     
-    init(viewModel: SourcesViewModel, mode: Mode = .edit) {
-        self.viewModel = viewModel
-        self.mode = mode
-    }
+    var mode: Mode = .edit
+    @ViewBuilder var actions: Actions
     
     var body: some View {
         ScrollView {
@@ -41,19 +37,40 @@ struct SourcesView: View {
             }
             .padding(.top, Layout.Padding.comfortable)
         }
-        .safeAreaBar(edge: .bottom, spacing: Layout.Spacing.regular) {
+        .emptyView(
+            if: viewModel.errorMessage != nil || viewModel.data.isEmpty,
+            label: Label("No Sources", systemImage: "network"),
+            description: {
+                VStack {
+                    Text("All article sources will appear here.")
+                }
+            },
+            actions: { actions }
+        )
+        .safeAreaBar(edge: .bottom, spacing: Layout.Padding.comfortable) {
             if viewModel.selectedCount > 0  {
                 Text("\(viewModel.selectedCount) selected")
                     .padding(.all, Layout.Padding.regular)
                     .glassEffect(.regular, in: .capsule)
+                    .padding(.bottom, Layout.Padding.regular)
                     .animation(.easeInOut, value: viewModel.selectedCount)
             }
         }
     }
 }
 
+extension SourcesView {
+    init(_ viewModel: SourcesViewModel,
+         mode: Mode = .edit,
+         @ViewBuilder actions: () -> Actions = EmptyView.init) {
+        self.viewModel = viewModel
+        self.mode = mode
+        self.actions = actions()
+    }
+}
+
 #Preview {
     @Previewable @StateObject var viewModel = SourcesViewModel()
     
-    SourcesView(viewModel: viewModel, mode: .view)
+    SourcesView(viewModel, mode: .view)
 }

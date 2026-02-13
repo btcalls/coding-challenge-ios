@@ -16,7 +16,7 @@ final class SavedArticlesViewModel: AppViewModel {
     @Published var isLoading: Bool = true
     @Published var errorMessage: String?
     // Provided initial value as placeholder for loading state
-    @Published var data: [Article] = []
+    @Published var data: [Article] = MockValues.articles
     
     private let manager: SwiftDataManager
     
