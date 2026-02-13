@@ -33,17 +33,17 @@ final class HeadlinesViewModel: AppViewModel {
         self.dataStore = SourcesDataStore()
     }
     
-    func fetchArticlesIfNeeded() async {
+    func fetchArticlesIfNeeded(withQuery query: String = "") async {
         guard !hasLoadedOnce else {
             return
         }
         
         hasLoadedOnce = true
         
-        await fetchArticles()
+        await fetchArticles(withQuery: query)
     }
     
-    func fetchArticles() async {
+    func fetchArticles(withQuery query: String = "") async {
         defer {
             isLoading = false
         }
@@ -59,6 +59,10 @@ final class HeadlinesViewModel: AppViewModel {
                 .init(name: "language", value: "en"),
                 .init(name: "pageSize", value: "20")
             ]
+            
+            if !query.isEmpty {
+                queryItems.append(.init(name: "q", value: query))
+            }
             
             if !sources.isEmpty {
                 let value = sources.map(\.id).joined(separator: ",")

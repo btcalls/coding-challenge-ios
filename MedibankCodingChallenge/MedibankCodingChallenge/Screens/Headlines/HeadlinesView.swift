@@ -10,6 +10,7 @@ import WebKit
 
 struct HeadlinesView: View {
     @StateObject private var viewModel = HeadlinesViewModel()
+    @StateObject private var searchContext = SearchContext()
     
     var body: some View {
         NavigationStack {
@@ -56,6 +57,16 @@ struct HeadlinesView: View {
             )
             .refreshable {
                 await viewModel.fetchArticles()
+            }
+            .searchable(text: $searchContext.query)
+            .onChange(of: searchContext.debouncedQuery) { oldValue, newValue in
+                guard oldValue != newValue else {
+                    return
+                }
+                
+                Task(name: "load-articles-with-query") {
+                    await viewModel.fetchArticles(withQuery: newValue)
+                }
             }
         }
         .task(id: "initial-load-articles") {
